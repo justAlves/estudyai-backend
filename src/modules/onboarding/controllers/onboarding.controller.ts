@@ -6,7 +6,8 @@ import { env } from "../../../config/env";
 import { db } from "../../../database";
 import { contestSupportSubjects } from "../../../database/tables/contest-support-subjects.table";
 import { contests } from "../../../database/tables/contests.table";
-import { createContestDto } from "../dtos/create-contest.dto";
+import { createContestDto, saveOnboardingDto } from "../dtos/create-contest.dto";
+import { users } from "../../../database/tables/users.table";
 
 const userIdFrom = async (authorization: string | undefined, verify: (token: string) => Promise<unknown>) => {
   const token = authorization?.replace(/^Bearer\s+/i, "");
@@ -18,6 +19,49 @@ const userIdFrom = async (authorization: string | undefined, verify: (token: str
 
 export const onboardingController = new Elysia({ prefix: "/onboarding", tags: ["Onboarding"] })
   .use(jwt({ name: "jwt", secret: env.JWT_SECRET }))
+  .get("/status", async ({ headers, jwt, set }) => {
+    const userId = await userIdFrom(headers.authorization, jwt.verify);
+    if (!userId) {
+      set.status = 401;
+      return { message: "Token inválido ou ausente" };
+    }
+
+    const [user] = await db
+      .select({ socialName: users.socialName, completedAt: users.onboardingCompletedAt })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    return { completed: !!user?.completedAt, socialName: user?.socialName ?? "" };
+  })
+  .post(
+    "/",
+    async ({ body, headers, jwt, set }) => {
+      const userId = await userIdFrom(headers.authorization, jwt.verify);
+      if (!userId) {
+        set.status = 401;
+        return { message: "Token inválido ou ausente" };
+      }
+
+      await db.transaction(async (tx) => {
+        await tx.update(users).set({
+          socialName: body.socialName,
+          onboardingPreferences: body,
+          ...(body.complete ? { onboardingCompletedAt: new Date() } : {}),
+        }).where(eq(users.id, userId));
+
+        if (!body.complete) return;
+
+        const { socialName: _, plan: __, complete: ___, supportSubjects, ...contestInput } = body;
+        const [contest] = await tx.insert(contests).values({ id: ulid(), userId, ...contestInput }).returning();
+        await tx.insert(contestSupportSubjects).values(supportSubjects.map((name) => ({ id: ulid(), contestId: contest.id, name })));
+      });
+
+      set.status = 201;
+      return { completed: body.complete };
+    },
+    { body: saveOnboardingDto, detail: { summary: "Salva as preferências do onboarding" } },
+  )
   .post(
     "/contests",
     async ({ body, headers, jwt, set }) => {

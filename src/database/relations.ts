@@ -4,11 +4,17 @@ import { contests } from "./tables/contests.table";
 import { passwordResetTokens } from "./tables/password-reset-tokens.table";
 import { refreshTokens } from "./tables/refresh-tokens.table";
 import { users } from "./tables/users.table";
+import { subscriptions } from "./tables/subscriptions.table";
 
 export const usersRelations = relations(users, ({ many }) => ({
   contests: many(contests),
   passwordResetTokens: many(passwordResetTokens),
   refreshTokens: many(refreshTokens),
+  subscriptions: many(subscriptions),
+}));
+
+export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
+  user: one(users, { fields: [subscriptions.userId], references: [users.id] }),
 }));
 
 export const contestsRelations = relations(contests, ({ one, many }) => ({

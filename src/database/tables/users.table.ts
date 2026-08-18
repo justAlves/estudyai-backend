@@ -1,10 +1,13 @@
-import { pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, jsonb, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: varchar("id", { length: 26 }).primaryKey(),
   name: varchar("name", { length: 120 }).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   socialName: varchar("social_name", { length: 120 }),
+  onboardingPreferences: jsonb("onboarding_preferences"),
+  onboardingCompletedAt: timestamp("onboarding_completed_at", { withTimezone: true }),
+  premium: boolean("premium").notNull().default(false),
   password: varchar("password", { length: 255 }).notNull(),
   firstLoginAt: timestamp("first_login_at", { withTimezone: true }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),

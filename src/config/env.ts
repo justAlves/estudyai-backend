@@ -12,5 +12,9 @@ export const env = z
     EVOLUTION_GO_URL: z.url().optional(),
     EVOLUTION_GO_API_KEY: z.string().min(1).optional(),
     EVOLUTION_INSTANCE_NAME: z.string().min(1).optional(),
+    APP_URL: z.url().default("http://localhost:3000"),
+    ABACATEPAY_API_KEY: z.string().min(1).optional(),
+    ABACATEPAY_PRO_PRODUCT_ID: z.string().min(1).optional(),
+    ABACATEPAY_WEBHOOK_SECRET: z.string().min(1).optional(),
   })
   .parse(process.env);
