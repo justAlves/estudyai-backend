@@ -4,6 +4,19 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "bun run --watch src/index.ts",
+    "worker:plans": "bun run src/workers/plan.worker.ts",
+    "worker:materials": "bun run src/workers/material.worker.ts",
+    "worker:rag": "bun run src/workers/rag-ingestion.worker.ts",
+    "rag:check": "bun run src/workers/rag-ingestion.worker.test.ts",
+    "rag:search:check": "bun run src/modules/rag/services/rag.service.test.ts",
+    "study:check": "bun run src/modules/study/services/material.service.test.ts",
+    "study:scheduling:check": "bun run src/modules/study/services/task-scheduling.service.test.ts",
+    "collect": "bun run scripts/collect/run.ts",
+    "collect:legacy": "bun run scripts/collect/run.ts --all",
+    "collect:help": "bun run scripts/collect.ts",
+    "collect:discover": "bun run scripts/collect/discover.ts",
+    "collect:pdf": "bun run scripts/collect/import-pdf.ts",
+    "collect:check": "bun run scripts/collect/import-pdf.test.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio"
@@ -15,6 +28,7 @@
     "@elysiajs/swagger": "^1.3.1",
     "drizzle-orm": "^0.45.2",
     "elysia": "latest",
+    "pino": "^10.3.1",
     "postgres": "^3.4.9",
     "ulid": "^3.0.2",
     "zod": "^4.4.3"

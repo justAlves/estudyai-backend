@@ -6,6 +6,8 @@ import { env } from "./config/env";
 import { authController } from "./modules/auth/controllers/auth.controller";
 import { onboardingController } from "./modules/onboarding/controllers/onboarding.controller";
 import { billingController } from "./modules/billing/controllers/billing.controller";
+import { ragController } from "./modules/rag/controllers/rag.controller";
+import { studyController } from "./modules/study/controllers/study.controller";
 
 const app = new Elysia()
   .use(cors({ origin: env.CORS_ORIGIN }))
@@ -20,6 +22,8 @@ const app = new Elysia()
   .use(authController)
   .use(onboardingController)
   .use(billingController)
+  .use(ragController)
+  .use(studyController)
   .get("/", () => "Hello Elysia")
   .listen(env.PORT);
 

@@ -1,4 +1,4 @@
-import { boolean, date, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, date, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { users } from "./users.table";
 
 export const contests = pgTable("contests", {
@@ -10,6 +10,8 @@ export const contests = pgTable("contests", {
   examiningBoard: varchar("examining_board", { length: 120 }).notNull(),
   examDate: date("exam_date").notNull(),
   isPopular: boolean("is_popular").notNull().default(false),
+  dailyStudyMinutes: integer("daily_study_minutes").notNull().default(120),
+  isActive: boolean("is_active").notNull().default(true),
   noticeUrl: text("notice_url"),
   noticeImportedAt: timestamp("notice_imported_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),

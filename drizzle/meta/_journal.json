@@ -43,6 +43,48 @@
       "when": 1787079060600,
       "tag": "0005_billing-subscriptions",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1787112415205,
+      "tag": "0006_study-plan-basics",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1787150471458,
+      "tag": "0007_initial-plan-worker",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1787153106754,
+      "tag": "0008_sleepy_quasimodo",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1787165911820,
+      "tag": "0009_green_stepford_cuckoos",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1787171381555,
+      "tag": "0010_remarkable_bloodaxe",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1787174050807,
+      "tag": "0011_plain_jack_flag",
+      "breakpoints": true
     }
   ]
 }

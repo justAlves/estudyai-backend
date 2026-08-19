@@ -5,6 +5,10 @@ import { passwordResetTokens } from "./tables/password-reset-tokens.table";
 import { refreshTokens } from "./tables/refresh-tokens.table";
 import { users } from "./tables/users.table";
 import { subscriptions } from "./tables/subscriptions.table";
+import { planGenerationJobs } from "./tables/plan-generation-jobs.table";
+import { studyTasks } from "./tables/study-tasks.table";
+import { materialGenerationJobs } from "./tables/material-generation-jobs.table";
+import { studyMaterials } from "./tables/study-materials.table";
 
 export const usersRelations = relations(users, ({ many }) => ({
   contests: many(contests),
@@ -23,6 +27,26 @@ export const contestsRelations = relations(contests, ({ one, many }) => ({
     references: [users.id],
   }),
   supportSubjects: many(contestSupportSubjects),
+  generationJobs: many(planGenerationJobs),
+  tasks: many(studyTasks),
+}));
+
+export const planGenerationJobsRelations = relations(planGenerationJobs, ({ one }) => ({
+  contest: one(contests, { fields: [planGenerationJobs.contestId], references: [contests.id] }),
+}));
+
+export const studyTasksRelations = relations(studyTasks, ({ one }) => ({
+  contest: one(contests, { fields: [studyTasks.contestId], references: [contests.id] }),
+  material: one(studyMaterials),
+  materialJob: one(materialGenerationJobs),
+}));
+
+export const studyMaterialsRelations = relations(studyMaterials, ({ one }) => ({
+  task: one(studyTasks, { fields: [studyMaterials.taskId], references: [studyTasks.id] }),
+}));
+
+export const materialGenerationJobsRelations = relations(materialGenerationJobs, ({ one }) => ({
+  task: one(studyTasks, { fields: [materialGenerationJobs.taskId], references: [studyTasks.id] }),
 }));
 
 export const contestSupportSubjectsRelations = relations(contestSupportSubjects, ({ one }) => ({

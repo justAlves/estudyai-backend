@@ -41,3 +41,6 @@ yarn-error.log*
 **/*.log
 package-lock.json
 **/*.bun
+
+# Source PDFs and extracted text are local ingestion artifacts.
+/data/

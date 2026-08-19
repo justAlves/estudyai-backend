@@ -5,6 +5,7 @@ export const createContestDto = z.object({
   examiningBoard: z.string().trim().min(2).max(120),
   examDate: z.iso.date(),
   isPopular: z.boolean().default(false),
+  dailyStudyMinutes: z.union([z.literal(30), z.literal(60), z.literal(120), z.literal(180), z.literal(240)]),
   supportSubjects: z.array(z.string().trim().min(2).max(120)).min(1),
 });
 

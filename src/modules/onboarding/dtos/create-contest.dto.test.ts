@@ -8,6 +8,7 @@ test("accepts an onboarding draft without completing it", () => {
     examDate: "2026-11-08",
     examiningBoard: "INEP",
     isPopular: true,
+    dailyStudyMinutes: 120,
     supportSubjects: ["Matemática"],
     plan: "free",
     complete: false,

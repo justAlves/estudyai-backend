@@ -9,6 +9,7 @@ export const env = z
       .refine((value) => value.startsWith("postgres://") || value.startsWith("postgresql://")),
     JWT_SECRET: z.string().min(32),
     OTEL_SERVICE_NAME: z.string().min(1).default("estudeai-api"),
+    LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),
     EVOLUTION_GO_URL: z.url().optional(),
     EVOLUTION_GO_API_KEY: z.string().min(1).optional(),
     EVOLUTION_INSTANCE_NAME: z.string().min(1).optional(),
@@ -16,5 +17,7 @@ export const env = z
     ABACATEPAY_API_KEY: z.string().min(1).optional(),
     ABACATEPAY_PRO_PRODUCT_ID: z.string().min(1).optional(),
     ABACATEPAY_WEBHOOK_SECRET: z.string().min(1).optional(),
+    GEMINI_API_KEY: z.string().min(1).optional(),
+    GEMINI_GENERATION_MODEL: z.string().min(1).default("gemini-3.6-flash"),
   })
   .parse(process.env);
