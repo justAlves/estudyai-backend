@@ -1,19 +1,45 @@
-services:
-  postgres:
-    image: pgvector/pgvector:pg17
+  x-estudeai: &estudeai
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      NODE_ENV: production
+      PORT: 3333
+      DATABASE_URL: ${DATABASE_URL:?}
+      JWT_SECRET: ${JWT_SECRET:?}
+      CORS_ORIGIN: ${CORS_ORIGIN:?}
+      APP_URL: ${APP_URL:?}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      OTEL_SERVICE_NAME: estudeai-api
+      GEMINI_API_KEY: ${GEMINI_API_KEY:?}
+      GEMINI_GENERATION_MODEL: ${GEMINI_GENERATION_MODEL:-gemini-3.6-flash}
+      EVOLUTION_GO_URL: ${EVOLUTION_GO_URL:?}
+      EVOLUTION_GO_API_KEY: ${EVOLUTION_GO_API_KEY:?}
+      EVOLUTION_INSTANCE_NAME: ${EVOLUTION_INSTANCE_NAME:?}
+      ABACATEPAY_API_KEY: ${ABACATEPAY_API_KEY:?}
+      ABACATEPAY_PRO_PRODUCT_ID: ${ABACATEPAY_PRO_PRODUCT_ID:?}
+      ABACATEPAY_WEBHOOK_SECRET: ${ABACATEPAY_WEBHOOK_SECRET:?}
 
-volumes:
-  postgres_data:
+  services:
+    api:
+      <<: *estudeai
+      command: ["bun", "run", "src/index.ts"]
+      expose:
+        - "3333"
+      healthcheck:
+        test: ["CMD-SHELL", "wget -qO- http://localhost:3333/ >/dev/null || exit 1"]
+        interval: 15s
+        timeout: 5s
+        retries: 5
+
+    worker-plans:
+      <<: *estudeai
+      command: ["bun", "run", "worker:plans"]
+
+    worker-materials:
+      <<: *estudeai
+      command: ["bun", "run", "worker:materials"]

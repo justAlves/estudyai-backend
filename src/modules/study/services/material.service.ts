@@ -34,7 +34,7 @@ export async function generateMaterial(subject: string, questions: RagQuestion[]
   const apiKey = env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("Defina GEMINI_API_KEY para gerar materiais.");
   const context = questions.map((question) => question.content).join("\n\n---\n\n");
-  const prompt = `Você é um professor preparatório. Crie uma aula completa, prática e didática de ${subject} em Markdown. Use as questões abaixo apenas como contexto; não invente leis, números ou fatos. Inclua: objetivos, explicação estruturada, exemplos, erros recorrentes e um resumo final. Não revele gabaritos se eles não estiverem no contexto.\n\nQUESTÕES DE CONTEXTO:\n${context}`;
+  const prompt = `Você é um professor preparatório. Crie uma aula completa, prática e didática de ${subject} em Markdown. Use as questões abaixo apenas como contexto; não invente leis, números ou fatos. Inclua: objetivos, explicação estruturada, exemplos, erros recorrentes e um resumo final. Quando um conceito tiver hierarquia, fluxo ou relação entre elementos, use um bloco \`\`\`mermaid com um diagrama simples; nunca use diagramas ASCII. Não revele gabaritos se eles não estiverem no contexto.\n\nQUESTÕES DE CONTEXTO:\n${context}`;
   const generate = (model: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
