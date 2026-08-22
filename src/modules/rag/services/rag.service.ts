@@ -10,7 +10,7 @@ export function vectorLiteral(values: number[]) {
   return `[${values.join(",")}]`;
 }
 
-async function embedQuery(query: string) {
+export async function embedQuery(query: string) {
   if (!env.GEMINI_API_KEY) throw new Error("Defina GEMINI_API_KEY para consultar o RAG.");
 
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${embeddingModel}:embedContent`, {

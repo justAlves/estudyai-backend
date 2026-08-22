@@ -1,0 +1,1958 @@
+[
+  {
+    "name": "ENEM",
+    "subs": [
+      "Linguagens",
+      "Ciências Humanas",
+      "Ciências da Natureza",
+      "Matemática",
+      "Redação"
+    ],
+    "content": [
+      "interpretação, literatura, língua estrangeira, artes e educação física",
+      "história, geografia, filosofia, sociologia e cidadania",
+      "biologia, física, química, energia, ambiente e saúde",
+      "aritmética, álgebra, geometria, estatística, probabilidade e funções",
+      "texto dissertativo-argumentativo, repertório, tese e proposta de intervenção"
+    ]
+  },
+  {
+    "name": "Polícia Federal - Agente",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Legislação Especial"
+    ],
+    "content": [
+      "interpretação, gêneros, gramática, concordância, regência e redação oficial",
+      "lógica proposicional, conjuntos, porcentagem, probabilidade e gráficos",
+      "sistemas, redes, internet, segurança, criptografia e evidências digitais",
+      "direitos fundamentais, segurança pública e organização dos poderes",
+      "atos, poderes, agentes, serviço público e responsabilidade do Estado",
+      "teoria do crime, crimes contra pessoa, patrimônio e Administração Pública",
+      "legislação institucional, abuso de autoridade, armas, drogas e organizações criminosas"
+    ]
+  },
+  {
+    "name": "Polícia Federal - Escrivão",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Legislação Especial"
+    ],
+    "content": [
+      "interpretação, gêneros, gramática, concordância, regência e redação oficial",
+      "lógica proposicional, conjuntos, porcentagem, probabilidade e gráficos",
+      "sistemas, redes, internet, segurança, criptografia e evidências digitais",
+      "direitos fundamentais, segurança pública e organização dos poderes",
+      "atos, poderes, agentes, serviço público e responsabilidade do Estado",
+      "teoria do crime, crimes contra pessoa, patrimônio e Administração Pública",
+      "legislação institucional, abuso de autoridade, armas, drogas e organizações criminosas"
+    ]
+  },
+  {
+    "name": "Polícia Federal - Papiloscopista",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Legislação Especial"
+    ],
+    "content": [
+      "interpretação, gêneros, gramática, concordância, regência e redação oficial",
+      "lógica proposicional, conjuntos, porcentagem, probabilidade e gráficos",
+      "sistemas, redes, internet, segurança, criptografia e evidências digitais",
+      "direitos fundamentais, segurança pública e organização dos poderes",
+      "atos, poderes, agentes, serviço público e responsabilidade do Estado",
+      "teoria do crime, crimes contra pessoa, patrimônio e Administração Pública",
+      "legislação institucional, abuso de autoridade, armas, drogas e organizações criminosas"
+    ]
+  },
+  {
+    "name": "Polícia Federal - Delegado",
+    "subs": [
+      "Língua Portuguesa",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Direito Processual Penal",
+      "Direitos Humanos"
+    ],
+    "content": [
+      "interpretação, reescrita, sintaxe e pontuação",
+      "direitos fundamentais, organização do Estado e poderes",
+      "atos, poderes, agentes, licitações, contratos e responsabilidade estatal",
+      "aplicação da lei penal, crimes, concurso de pessoas e penas",
+      "inquérito, ação penal, provas, prisões, recursos e competência",
+      "tratados, igualdade, não discriminação e proteção de grupos vulneráveis"
+    ]
+  },
+  {
+    "name": "Polícia Federal - Perito Criminal",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Governança de TI",
+      "Desenvolvimento de Sistemas",
+      "Banco de Dados",
+      "Redes e Segurança"
+    ],
+    "content": [
+      "interpretação, redação técnica e comunicação oficial",
+      "lógica proposicional, conjuntos, combinatória e probabilidade",
+      "ITIL, COBIT, gestão de riscos, projetos e serviços",
+      "engenharia de software, requisitos, testes, APIs e orientação a objetos",
+      "modelagem relacional, SQL, normalização, transações e NoSQL",
+      "TCP/IP, protocolos, firewalls, criptografia, LGPD e resposta a incidentes"
+    ]
+  },
+  {
+    "name": "Polícia Federal Administrativo - Agente Administrativo",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Administração Pública"
+    ],
+    "content": [
+      "interpretação, coesão e coerência",
+      "sintaxe, concordância, regência, crase e pontuação",
+      "proposições, equivalências, conjuntos, porcentagem e estatística",
+      "Windows, Office, internet, segurança da informação e backup",
+      "princípios, atos, poderes, agentes e serviços públicos",
+      "organização, planejamento, gestão por processos e governança"
+    ]
+  },
+  {
+    "name": "Polícia Rodoviária Federal",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Legislação Especial"
+    ],
+    "content": [
+      "interpretação, gêneros, gramática, concordância, regência e redação oficial",
+      "lógica proposicional, conjuntos, porcentagem, probabilidade e gráficos",
+      "sistemas, redes, internet, segurança, criptografia e evidências digitais",
+      "direitos fundamentais, segurança pública e organização dos poderes",
+      "atos, poderes, agentes, serviço público e responsabilidade do Estado",
+      "teoria do crime, crimes contra pessoa, patrimônio e Administração Pública",
+      "legislação institucional, abuso de autoridade, armas, drogas e organizações criminosas"
+    ]
+  },
+  {
+    "name": "Polícia Militar de São Paulo - Soldado",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Legislação Especial"
+    ],
+    "content": [
+      "interpretação, gêneros, gramática, concordância, regência e redação oficial",
+      "lógica proposicional, conjuntos, porcentagem, probabilidade e gráficos",
+      "sistemas, redes, internet, segurança, criptografia e evidências digitais",
+      "direitos fundamentais, segurança pública e organização dos poderes",
+      "atos, poderes, agentes, serviço público e responsabilidade do Estado",
+      "teoria do crime, crimes contra pessoa, patrimônio e Administração Pública",
+      "legislação institucional, abuso de autoridade, armas, drogas e organizações criminosas"
+    ]
+  },
+  {
+    "name": "Polícia Militar de Minas Gerais - Soldado",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Legislação Especial"
+    ],
+    "content": [
+      "interpretação, gêneros, gramática, concordância, regência e redação oficial",
+      "lógica proposicional, conjuntos, porcentagem, probabilidade e gráficos",
+      "sistemas, redes, internet, segurança, criptografia e evidências digitais",
+      "direitos fundamentais, segurança pública e organização dos poderes",
+      "atos, poderes, agentes, serviço público e responsabilidade do Estado",
+      "teoria do crime, crimes contra pessoa, patrimônio e Administração Pública",
+      "legislação institucional, abuso de autoridade, armas, drogas e organizações criminosas"
+    ]
+  },
+  {
+    "name": "Polícia Militar do Paraná - Soldado",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Legislação Especial"
+    ],
+    "content": [
+      "interpretação, gêneros, gramática, concordância, regência e redação oficial",
+      "lógica proposicional, conjuntos, porcentagem, probabilidade e gráficos",
+      "sistemas, redes, internet, segurança, criptografia e evidências digitais",
+      "direitos fundamentais, segurança pública e organização dos poderes",
+      "atos, poderes, agentes, serviço público e responsabilidade do Estado",
+      "teoria do crime, crimes contra pessoa, patrimônio e Administração Pública",
+      "legislação institucional, abuso de autoridade, armas, drogas e organizações criminosas"
+    ]
+  },
+  {
+    "name": "Polícia Civil de Minas Gerais - Técnico Assistente",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Legislação Especial"
+    ],
+    "content": [
+      "interpretação, gêneros, gramática, concordância, regência e redação oficial",
+      "lógica proposicional, conjuntos, porcentagem, probabilidade e gráficos",
+      "sistemas, redes, internet, segurança, criptografia e evidências digitais",
+      "direitos fundamentais, segurança pública e organização dos poderes",
+      "atos, poderes, agentes, serviço público e responsabilidade do Estado",
+      "teoria do crime, crimes contra pessoa, patrimônio e Administração Pública",
+      "legislação institucional, abuso de autoridade, armas, drogas e organizações criminosas"
+    ]
+  },
+  {
+    "name": "Polícia Civil de São Paulo - Investigador",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Legislação Especial"
+    ],
+    "content": [
+      "interpretação, gêneros, gramática, concordância, regência e redação oficial",
+      "lógica proposicional, conjuntos, porcentagem, probabilidade e gráficos",
+      "sistemas, redes, internet, segurança, criptografia e evidências digitais",
+      "direitos fundamentais, segurança pública e organização dos poderes",
+      "atos, poderes, agentes, serviço público e responsabilidade do Estado",
+      "teoria do crime, crimes contra pessoa, patrimônio e Administração Pública",
+      "legislação institucional, abuso de autoridade, armas, drogas e organizações criminosas"
+    ]
+  },
+  {
+    "name": "Polícia Civil do Distrito Federal - Agente",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Legislação Especial"
+    ],
+    "content": [
+      "interpretação, gêneros, gramática, concordância, regência e redação oficial",
+      "lógica proposicional, conjuntos, porcentagem, probabilidade e gráficos",
+      "sistemas, redes, internet, segurança, criptografia e evidências digitais",
+      "direitos fundamentais, segurança pública e organização dos poderes",
+      "atos, poderes, agentes, serviço público e responsabilidade do Estado",
+      "teoria do crime, crimes contra pessoa, patrimônio e Administração Pública",
+      "legislação institucional, abuso de autoridade, armas, drogas e organizações criminosas"
+    ]
+  },
+  {
+    "name": "Polícia Penal Federal",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Legislação Especial"
+    ],
+    "content": [
+      "interpretação, gêneros, gramática, concordância, regência e redação oficial",
+      "lógica proposicional, conjuntos, porcentagem, probabilidade e gráficos",
+      "sistemas, redes, internet, segurança, criptografia e evidências digitais",
+      "direitos fundamentais, segurança pública e organização dos poderes",
+      "atos, poderes, agentes, serviço público e responsabilidade do Estado",
+      "teoria do crime, crimes contra pessoa, patrimônio e Administração Pública",
+      "legislação institucional, abuso de autoridade, armas, drogas e organizações criminosas"
+    ]
+  },
+  {
+    "name": "Polícia Penal do Distrito Federal",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Legislação Especial"
+    ],
+    "content": [
+      "interpretação, gêneros, gramática, concordância, regência e redação oficial",
+      "lógica proposicional, conjuntos, porcentagem, probabilidade e gráficos",
+      "sistemas, redes, internet, segurança, criptografia e evidências digitais",
+      "direitos fundamentais, segurança pública e organização dos poderes",
+      "atos, poderes, agentes, serviço público e responsabilidade do Estado",
+      "teoria do crime, crimes contra pessoa, patrimônio e Administração Pública",
+      "legislação institucional, abuso de autoridade, armas, drogas e organizações criminosas"
+    ]
+  },
+  {
+    "name": "Polícia Penal de Minas Gerais",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Legislação Especial"
+    ],
+    "content": [
+      "interpretação, gêneros, gramática, concordância, regência e redação oficial",
+      "lógica proposicional, conjuntos, porcentagem, probabilidade e gráficos",
+      "sistemas, redes, internet, segurança, criptografia e evidências digitais",
+      "direitos fundamentais, segurança pública e organização dos poderes",
+      "atos, poderes, agentes, serviço público e responsabilidade do Estado",
+      "teoria do crime, crimes contra pessoa, patrimônio e Administração Pública",
+      "legislação institucional, abuso de autoridade, armas, drogas e organizações criminosas"
+    ]
+  },
+  {
+    "name": "Corpo de Bombeiros do Distrito Federal - Soldado",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Legislação Especial"
+    ],
+    "content": [
+      "interpretação, gêneros, gramática, concordância, regência e redação oficial",
+      "lógica proposicional, conjuntos, porcentagem, probabilidade e gráficos",
+      "sistemas, redes, internet, segurança, criptografia e evidências digitais",
+      "direitos fundamentais, segurança pública e organização dos poderes",
+      "atos, poderes, agentes, serviço público e responsabilidade do Estado",
+      "teoria do crime, crimes contra pessoa, patrimônio e Administração Pública",
+      "legislação institucional, abuso de autoridade, armas, drogas e organizações criminosas"
+    ]
+  },
+  {
+    "name": "Corpo de Bombeiros de Minas Gerais",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Legislação Especial"
+    ],
+    "content": [
+      "interpretação, gêneros, gramática, concordância, regência e redação oficial",
+      "lógica proposicional, conjuntos, porcentagem, probabilidade e gráficos",
+      "sistemas, redes, internet, segurança, criptografia e evidências digitais",
+      "direitos fundamentais, segurança pública e organização dos poderes",
+      "atos, poderes, agentes, serviço público e responsabilidade do Estado",
+      "teoria do crime, crimes contra pessoa, patrimônio e Administração Pública",
+      "legislação institucional, abuso de autoridade, armas, drogas e organizações criminosas"
+    ]
+  },
+  {
+    "name": "Guarda Civil Metropolitana de São Paulo",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Legislação Especial"
+    ],
+    "content": [
+      "interpretação, gêneros, gramática, concordância, regência e redação oficial",
+      "lógica proposicional, conjuntos, porcentagem, probabilidade e gráficos",
+      "sistemas, redes, internet, segurança, criptografia e evidências digitais",
+      "direitos fundamentais, segurança pública e organização dos poderes",
+      "atos, poderes, agentes, serviço público e responsabilidade do Estado",
+      "teoria do crime, crimes contra pessoa, patrimônio e Administração Pública",
+      "legislação institucional, abuso de autoridade, armas, drogas e organizações criminosas"
+    ]
+  },
+  {
+    "name": "MPU - Técnico do MPU",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Processual",
+      "Legislação Institucional",
+      "Acessibilidade"
+    ],
+    "content": [
+      "interpretação, coesão, reescrita, sintaxe, regência e pontuação",
+      "proposições, argumentação, conjuntos, combinatória e estatística",
+      "direitos fundamentais, organização do Estado e controle de constitucionalidade",
+      "atos, agentes, licitações, contratos e responsabilidade civil estatal",
+      "jurisdição, competência, partes, atos processuais, provas e recursos",
+      "regimento interno, organização do órgão e ética no serviço público",
+      "inclusão, atendimento prioritário e direitos da pessoa com deficiência"
+    ]
+  },
+  {
+    "name": "MPU - Analista de Direito",
+    "subs": [
+      "Língua Portuguesa",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Direito Processual Penal",
+      "Direitos Humanos"
+    ],
+    "content": [
+      "interpretação, reescrita, sintaxe e pontuação",
+      "direitos fundamentais, organização do Estado e poderes",
+      "atos, poderes, agentes, licitações, contratos e responsabilidade estatal",
+      "aplicação da lei penal, crimes, concurso de pessoas e penas",
+      "inquérito, ação penal, provas, prisões, recursos e competência",
+      "tratados, igualdade, não discriminação e proteção de grupos vulneráveis"
+    ]
+  },
+  {
+    "name": "MPU - Analista de Administração",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Administração Pública"
+    ],
+    "content": [
+      "interpretação, coesão e coerência",
+      "sintaxe, concordância, regência, crase e pontuação",
+      "proposições, equivalências, conjuntos, porcentagem e estatística",
+      "Windows, Office, internet, segurança da informação e backup",
+      "princípios, atos, poderes, agentes e serviços públicos",
+      "organização, planejamento, gestão por processos e governança"
+    ]
+  },
+  {
+    "name": "MPU - Analista de Tecnologia da Informação",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Governança de TI",
+      "Desenvolvimento de Sistemas",
+      "Banco de Dados",
+      "Redes e Segurança"
+    ],
+    "content": [
+      "interpretação, redação técnica e comunicação oficial",
+      "lógica proposicional, conjuntos, combinatória e probabilidade",
+      "ITIL, COBIT, gestão de riscos, projetos e serviços",
+      "engenharia de software, requisitos, testes, APIs e orientação a objetos",
+      "modelagem relacional, SQL, normalização, transações e NoSQL",
+      "TCP/IP, protocolos, firewalls, criptografia, LGPD e resposta a incidentes"
+    ]
+  },
+  {
+    "name": "TSE/TRE - Técnico Judiciário",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Processual",
+      "Legislação Institucional",
+      "Acessibilidade"
+    ],
+    "content": [
+      "interpretação, coesão, reescrita, sintaxe, regência e pontuação",
+      "proposições, argumentação, conjuntos, combinatória e estatística",
+      "direitos fundamentais, organização do Estado e controle de constitucionalidade",
+      "atos, agentes, licitações, contratos e responsabilidade civil estatal",
+      "jurisdição, competência, partes, atos processuais, provas e recursos",
+      "regimento interno, organização do órgão e ética no serviço público",
+      "inclusão, atendimento prioritário e direitos da pessoa com deficiência"
+    ]
+  },
+  {
+    "name": "TSE/TRE - Analista Judiciário Área Administrativa",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Processual",
+      "Legislação Institucional",
+      "Acessibilidade"
+    ],
+    "content": [
+      "interpretação, coesão, reescrita, sintaxe, regência e pontuação",
+      "proposições, argumentação, conjuntos, combinatória e estatística",
+      "direitos fundamentais, organização do Estado e controle de constitucionalidade",
+      "atos, agentes, licitações, contratos e responsabilidade civil estatal",
+      "jurisdição, competência, partes, atos processuais, provas e recursos",
+      "regimento interno, organização do órgão e ética no serviço público",
+      "inclusão, atendimento prioritário e direitos da pessoa com deficiência"
+    ]
+  },
+  {
+    "name": "TSE/TRE - Analista Judiciário Área Judiciária",
+    "subs": [
+      "Língua Portuguesa",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Direito Processual Penal",
+      "Direitos Humanos"
+    ],
+    "content": [
+      "interpretação, reescrita, sintaxe e pontuação",
+      "direitos fundamentais, organização do Estado e poderes",
+      "atos, poderes, agentes, licitações, contratos e responsabilidade estatal",
+      "aplicação da lei penal, crimes, concurso de pessoas e penas",
+      "inquérito, ação penal, provas, prisões, recursos e competência",
+      "tratados, igualdade, não discriminação e proteção de grupos vulneráveis"
+    ]
+  },
+  {
+    "name": "TSE/TRE - Analista de Tecnologia da Informação",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Governança de TI",
+      "Desenvolvimento de Sistemas",
+      "Banco de Dados",
+      "Redes e Segurança"
+    ],
+    "content": [
+      "interpretação, redação técnica e comunicação oficial",
+      "lógica proposicional, conjuntos, combinatória e probabilidade",
+      "ITIL, COBIT, gestão de riscos, projetos e serviços",
+      "engenharia de software, requisitos, testes, APIs e orientação a objetos",
+      "modelagem relacional, SQL, normalização, transações e NoSQL",
+      "TCP/IP, protocolos, firewalls, criptografia, LGPD e resposta a incidentes"
+    ]
+  },
+  {
+    "name": "STJ - Técnico Judiciário",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Processual",
+      "Legislação Institucional",
+      "Acessibilidade"
+    ],
+    "content": [
+      "interpretação, coesão, reescrita, sintaxe, regência e pontuação",
+      "proposições, argumentação, conjuntos, combinatória e estatística",
+      "direitos fundamentais, organização do Estado e controle de constitucionalidade",
+      "atos, agentes, licitações, contratos e responsabilidade civil estatal",
+      "jurisdição, competência, partes, atos processuais, provas e recursos",
+      "regimento interno, organização do órgão e ética no serviço público",
+      "inclusão, atendimento prioritário e direitos da pessoa com deficiência"
+    ]
+  },
+  {
+    "name": "STJ - Analista Judiciário",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Processual",
+      "Legislação Institucional",
+      "Acessibilidade"
+    ],
+    "content": [
+      "interpretação, coesão, reescrita, sintaxe, regência e pontuação",
+      "proposições, argumentação, conjuntos, combinatória e estatística",
+      "direitos fundamentais, organização do Estado e controle de constitucionalidade",
+      "atos, agentes, licitações, contratos e responsabilidade civil estatal",
+      "jurisdição, competência, partes, atos processuais, provas e recursos",
+      "regimento interno, organização do órgão e ética no serviço público",
+      "inclusão, atendimento prioritário e direitos da pessoa com deficiência"
+    ]
+  },
+  {
+    "name": "TRF - Técnico Judiciário",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Processual",
+      "Legislação Institucional",
+      "Acessibilidade"
+    ],
+    "content": [
+      "interpretação, coesão, reescrita, sintaxe, regência e pontuação",
+      "proposições, argumentação, conjuntos, combinatória e estatística",
+      "direitos fundamentais, organização do Estado e controle de constitucionalidade",
+      "atos, agentes, licitações, contratos e responsabilidade civil estatal",
+      "jurisdição, competência, partes, atos processuais, provas e recursos",
+      "regimento interno, organização do órgão e ética no serviço público",
+      "inclusão, atendimento prioritário e direitos da pessoa com deficiência"
+    ]
+  },
+  {
+    "name": "TRF - Analista Judiciário",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Processual",
+      "Legislação Institucional",
+      "Acessibilidade"
+    ],
+    "content": [
+      "interpretação, coesão, reescrita, sintaxe, regência e pontuação",
+      "proposições, argumentação, conjuntos, combinatória e estatística",
+      "direitos fundamentais, organização do Estado e controle de constitucionalidade",
+      "atos, agentes, licitações, contratos e responsabilidade civil estatal",
+      "jurisdição, competência, partes, atos processuais, provas e recursos",
+      "regimento interno, organização do órgão e ética no serviço público",
+      "inclusão, atendimento prioritário e direitos da pessoa com deficiência"
+    ]
+  },
+  {
+    "name": "TJDFT - Técnico Judiciário",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Processual",
+      "Legislação Institucional",
+      "Acessibilidade"
+    ],
+    "content": [
+      "interpretação, coesão, reescrita, sintaxe, regência e pontuação",
+      "proposições, argumentação, conjuntos, combinatória e estatística",
+      "direitos fundamentais, organização do Estado e controle de constitucionalidade",
+      "atos, agentes, licitações, contratos e responsabilidade civil estatal",
+      "jurisdição, competência, partes, atos processuais, provas e recursos",
+      "regimento interno, organização do órgão e ética no serviço público",
+      "inclusão, atendimento prioritário e direitos da pessoa com deficiência"
+    ]
+  },
+  {
+    "name": "TJDFT - Analista Judiciário",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Processual",
+      "Legislação Institucional",
+      "Acessibilidade"
+    ],
+    "content": [
+      "interpretação, coesão, reescrita, sintaxe, regência e pontuação",
+      "proposições, argumentação, conjuntos, combinatória e estatística",
+      "direitos fundamentais, organização do Estado e controle de constitucionalidade",
+      "atos, agentes, licitações, contratos e responsabilidade civil estatal",
+      "jurisdição, competência, partes, atos processuais, provas e recursos",
+      "regimento interno, organização do órgão e ética no serviço público",
+      "inclusão, atendimento prioritário e direitos da pessoa com deficiência"
+    ]
+  },
+  {
+    "name": "Tribunal de Justiça Estadual - Técnico",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Processual",
+      "Legislação Institucional",
+      "Acessibilidade"
+    ],
+    "content": [
+      "interpretação, coesão, reescrita, sintaxe, regência e pontuação",
+      "proposições, argumentação, conjuntos, combinatória e estatística",
+      "direitos fundamentais, organização do Estado e controle de constitucionalidade",
+      "atos, agentes, licitações, contratos e responsabilidade civil estatal",
+      "jurisdição, competência, partes, atos processuais, provas e recursos",
+      "regimento interno, organização do órgão e ética no serviço público",
+      "inclusão, atendimento prioritário e direitos da pessoa com deficiência"
+    ]
+  },
+  {
+    "name": "Tribunal de Justiça Estadual - Analista",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Processual",
+      "Legislação Institucional",
+      "Acessibilidade"
+    ],
+    "content": [
+      "interpretação, coesão, reescrita, sintaxe, regência e pontuação",
+      "proposições, argumentação, conjuntos, combinatória e estatística",
+      "direitos fundamentais, organização do Estado e controle de constitucionalidade",
+      "atos, agentes, licitações, contratos e responsabilidade civil estatal",
+      "jurisdição, competência, partes, atos processuais, provas e recursos",
+      "regimento interno, organização do órgão e ética no serviço público",
+      "inclusão, atendimento prioritário e direitos da pessoa com deficiência"
+    ]
+  },
+  {
+    "name": "Tribunal Regional do Trabalho - Técnico",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Processual",
+      "Legislação Institucional",
+      "Acessibilidade"
+    ],
+    "content": [
+      "interpretação, coesão, reescrita, sintaxe, regência e pontuação",
+      "proposições, argumentação, conjuntos, combinatória e estatística",
+      "direitos fundamentais, organização do Estado e controle de constitucionalidade",
+      "atos, agentes, licitações, contratos e responsabilidade civil estatal",
+      "jurisdição, competência, partes, atos processuais, provas e recursos",
+      "regimento interno, organização do órgão e ética no serviço público",
+      "inclusão, atendimento prioritário e direitos da pessoa com deficiência"
+    ]
+  },
+  {
+    "name": "Tribunal Regional do Trabalho - Analista",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Processual",
+      "Legislação Institucional",
+      "Acessibilidade"
+    ],
+    "content": [
+      "interpretação, coesão, reescrita, sintaxe, regência e pontuação",
+      "proposições, argumentação, conjuntos, combinatória e estatística",
+      "direitos fundamentais, organização do Estado e controle de constitucionalidade",
+      "atos, agentes, licitações, contratos e responsabilidade civil estatal",
+      "jurisdição, competência, partes, atos processuais, provas e recursos",
+      "regimento interno, organização do órgão e ética no serviço público",
+      "inclusão, atendimento prioritário e direitos da pessoa com deficiência"
+    ]
+  },
+  {
+    "name": "Tribunal de Contas da União - Auditor",
+    "subs": [
+      "Língua Portuguesa",
+      "Contabilidade Pública",
+      "Auditoria",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Orçamento Público"
+    ],
+    "content": [
+      "interpretação, sintaxe, coesão e redação oficial",
+      "patrimônio público, receitas, despesas e demonstrações aplicadas ao setor público",
+      "planejamento, riscos, evidências, achados e relatório de auditoria",
+      "controle, fiscalização, direitos fundamentais e Administração Pública",
+      "licitações, contratos, agentes, improbidade e controle administrativo",
+      "PPA, LDO, LOA, créditos, restos a pagar e Lei de Responsabilidade Fiscal"
+    ]
+  },
+  {
+    "name": "Tribunal de Contas Estadual - Auditor",
+    "subs": [
+      "Língua Portuguesa",
+      "Contabilidade Pública",
+      "Auditoria",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Orçamento Público"
+    ],
+    "content": [
+      "interpretação, sintaxe, coesão e redação oficial",
+      "patrimônio público, receitas, despesas e demonstrações aplicadas ao setor público",
+      "planejamento, riscos, evidências, achados e relatório de auditoria",
+      "controle, fiscalização, direitos fundamentais e Administração Pública",
+      "licitações, contratos, agentes, improbidade e controle administrativo",
+      "PPA, LDO, LOA, créditos, restos a pagar e Lei de Responsabilidade Fiscal"
+    ]
+  },
+  {
+    "name": "Receita Federal - Auditor-Fiscal",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico e Estatística",
+      "Contabilidade",
+      "Direito Tributário",
+      "Direito Administrativo",
+      "Economia"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, reescrita e redação oficial",
+      "lógica, análise combinatória, probabilidade, média, variância e regressão",
+      "patrimônio, escrituração, balanço, DRE, custos e demonstrações contábeis",
+      "sistema tributário, tributos, obrigação, crédito, lançamento e fiscalização",
+      "Administração Pública, atos, agentes, licitações e controle",
+      "oferta, demanda, inflação, política fiscal, monetária e câmbio"
+    ]
+  },
+  {
+    "name": "Receita Federal - Analista-Tributário",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico e Estatística",
+      "Contabilidade",
+      "Direito Tributário",
+      "Direito Administrativo",
+      "Economia"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, reescrita e redação oficial",
+      "lógica, análise combinatória, probabilidade, média, variância e regressão",
+      "patrimônio, escrituração, balanço, DRE, custos e demonstrações contábeis",
+      "sistema tributário, tributos, obrigação, crédito, lançamento e fiscalização",
+      "Administração Pública, atos, agentes, licitações e controle",
+      "oferta, demanda, inflação, política fiscal, monetária e câmbio"
+    ]
+  },
+  {
+    "name": "SEFAZ Estadual - Auditor Fiscal",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico e Estatística",
+      "Contabilidade",
+      "Direito Tributário",
+      "Direito Administrativo",
+      "Economia"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, reescrita e redação oficial",
+      "lógica, análise combinatória, probabilidade, média, variância e regressão",
+      "patrimônio, escrituração, balanço, DRE, custos e demonstrações contábeis",
+      "sistema tributário, tributos, obrigação, crédito, lançamento e fiscalização",
+      "Administração Pública, atos, agentes, licitações e controle",
+      "oferta, demanda, inflação, política fiscal, monetária e câmbio"
+    ]
+  },
+  {
+    "name": "SEFAZ Estadual - Analista Tributário",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico e Estatística",
+      "Contabilidade",
+      "Direito Tributário",
+      "Direito Administrativo",
+      "Economia"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, reescrita e redação oficial",
+      "lógica, análise combinatória, probabilidade, média, variância e regressão",
+      "patrimônio, escrituração, balanço, DRE, custos e demonstrações contábeis",
+      "sistema tributário, tributos, obrigação, crédito, lançamento e fiscalização",
+      "Administração Pública, atos, agentes, licitações e controle",
+      "oferta, demanda, inflação, política fiscal, monetária e câmbio"
+    ]
+  },
+  {
+    "name": "SEFIN Municipal - Auditor Fiscal",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico e Estatística",
+      "Contabilidade",
+      "Direito Tributário",
+      "Direito Administrativo",
+      "Economia"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, reescrita e redação oficial",
+      "lógica, análise combinatória, probabilidade, média, variância e regressão",
+      "patrimônio, escrituração, balanço, DRE, custos e demonstrações contábeis",
+      "sistema tributário, tributos, obrigação, crédito, lançamento e fiscalização",
+      "Administração Pública, atos, agentes, licitações e controle",
+      "oferta, demanda, inflação, política fiscal, monetária e câmbio"
+    ]
+  },
+  {
+    "name": "CGU - Auditor Federal de Finanças e Controle",
+    "subs": [
+      "Língua Portuguesa",
+      "Contabilidade Pública",
+      "Auditoria",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Orçamento Público"
+    ],
+    "content": [
+      "interpretação, sintaxe, coesão e redação oficial",
+      "patrimônio público, receitas, despesas e demonstrações aplicadas ao setor público",
+      "planejamento, riscos, evidências, achados e relatório de auditoria",
+      "controle, fiscalização, direitos fundamentais e Administração Pública",
+      "licitações, contratos, agentes, improbidade e controle administrativo",
+      "PPA, LDO, LOA, créditos, restos a pagar e Lei de Responsabilidade Fiscal"
+    ]
+  },
+  {
+    "name": "Controladoria Estadual - Auditor",
+    "subs": [
+      "Língua Portuguesa",
+      "Contabilidade Pública",
+      "Auditoria",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Orçamento Público"
+    ],
+    "content": [
+      "interpretação, sintaxe, coesão e redação oficial",
+      "patrimônio público, receitas, despesas e demonstrações aplicadas ao setor público",
+      "planejamento, riscos, evidências, achados e relatório de auditoria",
+      "controle, fiscalização, direitos fundamentais e Administração Pública",
+      "licitações, contratos, agentes, improbidade e controle administrativo",
+      "PPA, LDO, LOA, créditos, restos a pagar e Lei de Responsabilidade Fiscal"
+    ]
+  },
+  {
+    "name": "Controladoria Municipal - Auditor",
+    "subs": [
+      "Língua Portuguesa",
+      "Contabilidade Pública",
+      "Auditoria",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Orçamento Público"
+    ],
+    "content": [
+      "interpretação, sintaxe, coesão e redação oficial",
+      "patrimônio público, receitas, despesas e demonstrações aplicadas ao setor público",
+      "planejamento, riscos, evidências, achados e relatório de auditoria",
+      "controle, fiscalização, direitos fundamentais e Administração Pública",
+      "licitações, contratos, agentes, improbidade e controle administrativo",
+      "PPA, LDO, LOA, créditos, restos a pagar e Lei de Responsabilidade Fiscal"
+    ]
+  },
+  {
+    "name": "Banco Central - Analista",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico e Estatística",
+      "Contabilidade",
+      "Direito Tributário",
+      "Direito Administrativo",
+      "Economia"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, reescrita e redação oficial",
+      "lógica, análise combinatória, probabilidade, média, variância e regressão",
+      "patrimônio, escrituração, balanço, DRE, custos e demonstrações contábeis",
+      "sistema tributário, tributos, obrigação, crédito, lançamento e fiscalização",
+      "Administração Pública, atos, agentes, licitações e controle",
+      "oferta, demanda, inflação, política fiscal, monetária e câmbio"
+    ]
+  },
+  {
+    "name": "Banco Central - Técnico",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Administração Pública"
+    ],
+    "content": [
+      "interpretação, coesão e coerência",
+      "sintaxe, concordância, regência, crase e pontuação",
+      "proposições, equivalências, conjuntos, porcentagem e estatística",
+      "Windows, Office, internet, segurança da informação e backup",
+      "princípios, atos, poderes, agentes e serviços públicos",
+      "organização, planejamento, gestão por processos e governança"
+    ]
+  },
+  {
+    "name": "CPNU - Bloco 1 Infraestrutura",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Administração Pública"
+    ],
+    "content": [
+      "interpretação, coesão e coerência",
+      "sintaxe, concordância, regência, crase e pontuação",
+      "proposições, equivalências, conjuntos, porcentagem e estatística",
+      "Windows, Office, internet, segurança da informação e backup",
+      "princípios, atos, poderes, agentes e serviços públicos",
+      "organização, planejamento, gestão por processos e governança"
+    ]
+  },
+  {
+    "name": "CPNU - Bloco 2 Tecnologia",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Governança de TI",
+      "Desenvolvimento de Sistemas",
+      "Banco de Dados",
+      "Redes e Segurança"
+    ],
+    "content": [
+      "interpretação, redação técnica e comunicação oficial",
+      "lógica proposicional, conjuntos, combinatória e probabilidade",
+      "ITIL, COBIT, gestão de riscos, projetos e serviços",
+      "engenharia de software, requisitos, testes, APIs e orientação a objetos",
+      "modelagem relacional, SQL, normalização, transações e NoSQL",
+      "TCP/IP, protocolos, firewalls, criptografia, LGPD e resposta a incidentes"
+    ]
+  },
+  {
+    "name": "CPNU - Bloco 3 Ambiental",
+    "subs": [
+      "Língua Portuguesa",
+      "Legislação Ambiental",
+      "Políticas Públicas",
+      "Geoprocessamento",
+      "Conhecimentos Ambientais",
+      "Gestão Pública"
+    ],
+    "content": [
+      "interpretação, gramática e redação oficial",
+      "licenciamento, crimes ambientais, unidades de conservação e responsabilidade",
+      "Política Nacional do Meio Ambiente, recursos hídricos e mudanças climáticas",
+      "cartografia, SIG, sensoriamento remoto e análise espacial",
+      "biodiversidade, geologia, hidrologia, mineração e impactos ambientais",
+      "planejamento, fiscalização, indicadores e gestão de projetos"
+    ]
+  },
+  {
+    "name": "CPNU - Bloco 4 Trabalho e Saúde do Servidor",
+    "subs": [
+      "Língua Portuguesa",
+      "Políticas de Saúde",
+      "Sistema Único de Saúde",
+      "Legislação Profissional",
+      "Conhecimentos Específicos",
+      "Ética"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, redação oficial e comunicação",
+      "princípios, diretrizes, regionalização e financiamento do SUS",
+      "atenção básica, vigilância, redes de atenção e participação social",
+      "legislação do conselho, atribuições e responsabilidade técnica",
+      "procedimentos, protocolos, biossegurança e atendimento conforme o cargo",
+      "princípios bioéticos, sigilo, responsabilidade e direitos do paciente"
+    ]
+  },
+  {
+    "name": "CPNU - Bloco 5 Educação e Direitos Humanos",
+    "subs": [
+      "Língua Portuguesa",
+      "Legislação Educacional",
+      "Didática",
+      "Políticas Públicas",
+      "Educação Inclusiva",
+      "Conhecimentos Específicos da Licenciatura"
+    ],
+    "content": [
+      "interpretação, gramática, sintaxe, coesão e produção textual",
+      "Constituição, LDB, ECA, PNE, BNCC e planos educacionais",
+      "planejamento, currículo, metodologias, avaliação e gestão da sala",
+      "financiamento, gestão democrática, indicadores e políticas educacionais",
+      "acessibilidade, atendimento educacional especializado e diversidade",
+      "conteúdos da disciplina, metodologias de ensino e avaliação específica"
+    ]
+  },
+  {
+    "name": "CPNU - Bloco 6 Desenvolvimento e Justiça",
+    "subs": [
+      "Língua Portuguesa",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Direito Penal",
+      "Direito Processual Penal",
+      "Direitos Humanos"
+    ],
+    "content": [
+      "interpretação, reescrita, sintaxe e pontuação",
+      "direitos fundamentais, organização do Estado e poderes",
+      "atos, poderes, agentes, licitações, contratos e responsabilidade estatal",
+      "aplicação da lei penal, crimes, concurso de pessoas e penas",
+      "inquérito, ação penal, provas, prisões, recursos e competência",
+      "tratados, igualdade, não discriminação e proteção de grupos vulneráveis"
+    ]
+  },
+  {
+    "name": "CPNU - Bloco 7 Gestão Governamental",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Administração Pública"
+    ],
+    "content": [
+      "interpretação, coesão e coerência",
+      "sintaxe, concordância, regência, crase e pontuação",
+      "proposições, equivalências, conjuntos, porcentagem e estatística",
+      "Windows, Office, internet, segurança da informação e backup",
+      "princípios, atos, poderes, agentes e serviços públicos",
+      "organização, planejamento, gestão por processos e governança"
+    ]
+  },
+  {
+    "name": "CPNU - Bloco 8 Intermediário",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Administração Pública"
+    ],
+    "content": [
+      "interpretação, coesão e coerência",
+      "sintaxe, concordância, regência, crase e pontuação",
+      "proposições, equivalências, conjuntos, porcentagem e estatística",
+      "Windows, Office, internet, segurança da informação e backup",
+      "princípios, atos, poderes, agentes e serviços públicos",
+      "organização, planejamento, gestão por processos e governança"
+    ]
+  },
+  {
+    "name": "Analista Técnico da SUSEP",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico e Estatística",
+      "Contabilidade",
+      "Direito Tributário",
+      "Direito Administrativo",
+      "Economia"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, reescrita e redação oficial",
+      "lógica, análise combinatória, probabilidade, média, variância e regressão",
+      "patrimônio, escrituração, balanço, DRE, custos e demonstrações contábeis",
+      "sistema tributário, tributos, obrigação, crédito, lançamento e fiscalização",
+      "Administração Pública, atos, agentes, licitações e controle",
+      "oferta, demanda, inflação, política fiscal, monetária e câmbio"
+    ]
+  },
+  {
+    "name": "Analista Técnico do Ministério da Gestão",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Administração Pública"
+    ],
+    "content": [
+      "interpretação, coesão e coerência",
+      "sintaxe, concordância, regência, crase e pontuação",
+      "proposições, equivalências, conjuntos, porcentagem e estatística",
+      "Windows, Office, internet, segurança da informação e backup",
+      "princípios, atos, poderes, agentes e serviços públicos",
+      "organização, planejamento, gestão por processos e governança"
+    ]
+  },
+  {
+    "name": "INSS - Técnico do Seguro Social",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Administração Pública"
+    ],
+    "content": [
+      "interpretação, coesão e coerência",
+      "sintaxe, concordância, regência, crase e pontuação",
+      "proposições, equivalências, conjuntos, porcentagem e estatística",
+      "Windows, Office, internet, segurança da informação e backup",
+      "princípios, atos, poderes, agentes e serviços públicos",
+      "organização, planejamento, gestão por processos e governança"
+    ]
+  },
+  {
+    "name": "INSS - Analista do Seguro Social",
+    "subs": [
+      "Língua Portuguesa",
+      "Políticas de Saúde",
+      "Sistema Único de Saúde",
+      "Legislação Profissional",
+      "Conhecimentos Específicos",
+      "Ética"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, redação oficial e comunicação",
+      "princípios, diretrizes, regionalização e financiamento do SUS",
+      "atenção básica, vigilância, redes de atenção e participação social",
+      "legislação do conselho, atribuições e responsabilidade técnica",
+      "procedimentos, protocolos, biossegurança e atendimento conforme o cargo",
+      "princípios bioéticos, sigilo, responsabilidade e direitos do paciente"
+    ]
+  },
+  {
+    "name": "Ministério da Saúde - Analista Técnico",
+    "subs": [
+      "Língua Portuguesa",
+      "Políticas de Saúde",
+      "Sistema Único de Saúde",
+      "Legislação Profissional",
+      "Conhecimentos Específicos",
+      "Ética"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, redação oficial e comunicação",
+      "princípios, diretrizes, regionalização e financiamento do SUS",
+      "atenção básica, vigilância, redes de atenção e participação social",
+      "legislação do conselho, atribuições e responsabilidade técnica",
+      "procedimentos, protocolos, biossegurança e atendimento conforme o cargo",
+      "princípios bioéticos, sigilo, responsabilidade e direitos do paciente"
+    ]
+  },
+  {
+    "name": "Fiocruz - Tecnologista",
+    "subs": [
+      "Língua Portuguesa",
+      "Políticas de Saúde",
+      "Sistema Único de Saúde",
+      "Legislação Profissional",
+      "Conhecimentos Específicos",
+      "Ética"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, redação oficial e comunicação",
+      "princípios, diretrizes, regionalização e financiamento do SUS",
+      "atenção básica, vigilância, redes de atenção e participação social",
+      "legislação do conselho, atribuições e responsabilidade técnica",
+      "procedimentos, protocolos, biossegurança e atendimento conforme o cargo",
+      "princípios bioéticos, sigilo, responsabilidade e direitos do paciente"
+    ]
+  },
+  {
+    "name": "EBSERH - Técnico de Enfermagem",
+    "subs": [
+      "Língua Portuguesa",
+      "Políticas de Saúde",
+      "Sistema Único de Saúde",
+      "Legislação Profissional",
+      "Conhecimentos Específicos",
+      "Ética"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, redação oficial e comunicação",
+      "princípios, diretrizes, regionalização e financiamento do SUS",
+      "atenção básica, vigilância, redes de atenção e participação social",
+      "legislação do conselho, atribuições e responsabilidade técnica",
+      "procedimentos, protocolos, biossegurança e atendimento conforme o cargo",
+      "princípios bioéticos, sigilo, responsabilidade e direitos do paciente"
+    ]
+  },
+  {
+    "name": "EBSERH - Enfermeiro",
+    "subs": [
+      "Língua Portuguesa",
+      "Políticas de Saúde",
+      "Sistema Único de Saúde",
+      "Legislação Profissional",
+      "Conhecimentos Específicos",
+      "Ética"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, redação oficial e comunicação",
+      "princípios, diretrizes, regionalização e financiamento do SUS",
+      "atenção básica, vigilância, redes de atenção e participação social",
+      "legislação do conselho, atribuições e responsabilidade técnica",
+      "procedimentos, protocolos, biossegurança e atendimento conforme o cargo",
+      "princípios bioéticos, sigilo, responsabilidade e direitos do paciente"
+    ]
+  },
+  {
+    "name": "Secretaria Estadual de Saúde - Enfermeiro",
+    "subs": [
+      "Língua Portuguesa",
+      "Políticas de Saúde",
+      "Sistema Único de Saúde",
+      "Legislação Profissional",
+      "Conhecimentos Específicos",
+      "Ética"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, redação oficial e comunicação",
+      "princípios, diretrizes, regionalização e financiamento do SUS",
+      "atenção básica, vigilância, redes de atenção e participação social",
+      "legislação do conselho, atribuições e responsabilidade técnica",
+      "procedimentos, protocolos, biossegurança e atendimento conforme o cargo",
+      "princípios bioéticos, sigilo, responsabilidade e direitos do paciente"
+    ]
+  },
+  {
+    "name": "Secretaria Estadual de Saúde - Técnico de Enfermagem",
+    "subs": [
+      "Língua Portuguesa",
+      "Políticas de Saúde",
+      "Sistema Único de Saúde",
+      "Legislação Profissional",
+      "Conhecimentos Específicos",
+      "Ética"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, redação oficial e comunicação",
+      "princípios, diretrizes, regionalização e financiamento do SUS",
+      "atenção básica, vigilância, redes de atenção e participação social",
+      "legislação do conselho, atribuições e responsabilidade técnica",
+      "procedimentos, protocolos, biossegurança e atendimento conforme o cargo",
+      "princípios bioéticos, sigilo, responsabilidade e direitos do paciente"
+    ]
+  },
+  {
+    "name": "Secretaria Municipal de Saúde - Agente Administrativo",
+    "subs": [
+      "Língua Portuguesa",
+      "Políticas de Saúde",
+      "Sistema Único de Saúde",
+      "Legislação Profissional",
+      "Conhecimentos Específicos",
+      "Ética"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, redação oficial e comunicação",
+      "princípios, diretrizes, regionalização e financiamento do SUS",
+      "atenção básica, vigilância, redes de atenção e participação social",
+      "legislação do conselho, atribuições e responsabilidade técnica",
+      "procedimentos, protocolos, biossegurança e atendimento conforme o cargo",
+      "princípios bioéticos, sigilo, responsabilidade e direitos do paciente"
+    ]
+  },
+  {
+    "name": "Secretaria Municipal de Saúde - Agente Comunitário",
+    "subs": [
+      "Língua Portuguesa",
+      "Políticas de Saúde",
+      "Sistema Único de Saúde",
+      "Legislação Profissional",
+      "Conhecimentos Específicos",
+      "Ética"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, redação oficial e comunicação",
+      "princípios, diretrizes, regionalização e financiamento do SUS",
+      "atenção básica, vigilância, redes de atenção e participação social",
+      "legislação do conselho, atribuições e responsabilidade técnica",
+      "procedimentos, protocolos, biossegurança e atendimento conforme o cargo",
+      "princípios bioéticos, sigilo, responsabilidade e direitos do paciente"
+    ]
+  },
+  {
+    "name": "Secretaria de Educação - Professor de Língua Portuguesa",
+    "subs": [
+      "Língua Portuguesa",
+      "Legislação Educacional",
+      "Didática",
+      "Políticas Públicas",
+      "Educação Inclusiva",
+      "Conhecimentos Específicos da Licenciatura"
+    ],
+    "content": [
+      "interpretação, gramática, sintaxe, coesão e produção textual",
+      "Constituição, LDB, ECA, PNE, BNCC e planos educacionais",
+      "planejamento, currículo, metodologias, avaliação e gestão da sala",
+      "financiamento, gestão democrática, indicadores e políticas educacionais",
+      "acessibilidade, atendimento educacional especializado e diversidade",
+      "conteúdos da disciplina, metodologias de ensino e avaliação específica"
+    ]
+  },
+  {
+    "name": "Secretaria de Educação - Professor de Matemática",
+    "subs": [
+      "Língua Portuguesa",
+      "Legislação Educacional",
+      "Didática",
+      "Políticas Públicas",
+      "Educação Inclusiva",
+      "Conhecimentos Específicos da Licenciatura"
+    ],
+    "content": [
+      "interpretação, gramática, sintaxe, coesão e produção textual",
+      "Constituição, LDB, ECA, PNE, BNCC e planos educacionais",
+      "planejamento, currículo, metodologias, avaliação e gestão da sala",
+      "financiamento, gestão democrática, indicadores e políticas educacionais",
+      "acessibilidade, atendimento educacional especializado e diversidade",
+      "conteúdos da disciplina, metodologias de ensino e avaliação específica"
+    ]
+  },
+  {
+    "name": "Secretaria de Educação - Professor de História",
+    "subs": [
+      "Língua Portuguesa",
+      "Legislação Educacional",
+      "Didática",
+      "Políticas Públicas",
+      "Educação Inclusiva",
+      "Conhecimentos Específicos da Licenciatura"
+    ],
+    "content": [
+      "interpretação, gramática, sintaxe, coesão e produção textual",
+      "Constituição, LDB, ECA, PNE, BNCC e planos educacionais",
+      "planejamento, currículo, metodologias, avaliação e gestão da sala",
+      "financiamento, gestão democrática, indicadores e políticas educacionais",
+      "acessibilidade, atendimento educacional especializado e diversidade",
+      "conteúdos da disciplina, metodologias de ensino e avaliação específica"
+    ]
+  },
+  {
+    "name": "Secretaria de Educação - Professor de Geografia",
+    "subs": [
+      "Língua Portuguesa",
+      "Legislação Educacional",
+      "Didática",
+      "Políticas Públicas",
+      "Educação Inclusiva",
+      "Conhecimentos Específicos da Licenciatura"
+    ],
+    "content": [
+      "interpretação, gramática, sintaxe, coesão e produção textual",
+      "Constituição, LDB, ECA, PNE, BNCC e planos educacionais",
+      "planejamento, currículo, metodologias, avaliação e gestão da sala",
+      "financiamento, gestão democrática, indicadores e políticas educacionais",
+      "acessibilidade, atendimento educacional especializado e diversidade",
+      "conteúdos da disciplina, metodologias de ensino e avaliação específica"
+    ]
+  },
+  {
+    "name": "Secretaria de Educação - Professor de Ciências",
+    "subs": [
+      "Língua Portuguesa",
+      "Legislação Educacional",
+      "Didática",
+      "Políticas Públicas",
+      "Educação Inclusiva",
+      "Conhecimentos Específicos da Licenciatura"
+    ],
+    "content": [
+      "interpretação, gramática, sintaxe, coesão e produção textual",
+      "Constituição, LDB, ECA, PNE, BNCC e planos educacionais",
+      "planejamento, currículo, metodologias, avaliação e gestão da sala",
+      "financiamento, gestão democrática, indicadores e políticas educacionais",
+      "acessibilidade, atendimento educacional especializado e diversidade",
+      "conteúdos da disciplina, metodologias de ensino e avaliação específica"
+    ]
+  },
+  {
+    "name": "Secretaria de Educação - Professor de Educação Física",
+    "subs": [
+      "Língua Portuguesa",
+      "Legislação Educacional",
+      "Didática",
+      "Políticas Públicas",
+      "Educação Inclusiva",
+      "Conhecimentos Específicos da Licenciatura"
+    ],
+    "content": [
+      "interpretação, gramática, sintaxe, coesão e produção textual",
+      "Constituição, LDB, ECA, PNE, BNCC e planos educacionais",
+      "planejamento, currículo, metodologias, avaliação e gestão da sala",
+      "financiamento, gestão democrática, indicadores e políticas educacionais",
+      "acessibilidade, atendimento educacional especializado e diversidade",
+      "conteúdos da disciplina, metodologias de ensino e avaliação específica"
+    ]
+  },
+  {
+    "name": "Secretaria de Educação - Pedagogo",
+    "subs": [
+      "Língua Portuguesa",
+      "Legislação Educacional",
+      "Didática",
+      "Políticas Públicas",
+      "Educação Inclusiva",
+      "Conhecimentos Específicos da Licenciatura"
+    ],
+    "content": [
+      "interpretação, gramática, sintaxe, coesão e produção textual",
+      "Constituição, LDB, ECA, PNE, BNCC e planos educacionais",
+      "planejamento, currículo, metodologias, avaliação e gestão da sala",
+      "financiamento, gestão democrática, indicadores e políticas educacionais",
+      "acessibilidade, atendimento educacional especializado e diversidade",
+      "conteúdos da disciplina, metodologias de ensino e avaliação específica"
+    ]
+  },
+  {
+    "name": "Secretaria de Educação - Supervisor Escolar",
+    "subs": [
+      "Língua Portuguesa",
+      "Legislação Educacional",
+      "Didática",
+      "Políticas Públicas",
+      "Educação Inclusiva",
+      "Conhecimentos Específicos da Licenciatura"
+    ],
+    "content": [
+      "interpretação, gramática, sintaxe, coesão e produção textual",
+      "Constituição, LDB, ECA, PNE, BNCC e planos educacionais",
+      "planejamento, currículo, metodologias, avaliação e gestão da sala",
+      "financiamento, gestão democrática, indicadores e políticas educacionais",
+      "acessibilidade, atendimento educacional especializado e diversidade",
+      "conteúdos da disciplina, metodologias de ensino e avaliação específica"
+    ]
+  },
+  {
+    "name": "Secretaria Municipal de Educação - Professor",
+    "subs": [
+      "Língua Portuguesa",
+      "Legislação Educacional",
+      "Didática",
+      "Políticas Públicas",
+      "Educação Inclusiva",
+      "Conhecimentos Específicos da Licenciatura"
+    ],
+    "content": [
+      "interpretação, gramática, sintaxe, coesão e produção textual",
+      "Constituição, LDB, ECA, PNE, BNCC e planos educacionais",
+      "planejamento, currículo, metodologias, avaliação e gestão da sala",
+      "financiamento, gestão democrática, indicadores e políticas educacionais",
+      "acessibilidade, atendimento educacional especializado e diversidade",
+      "conteúdos da disciplina, metodologias de ensino e avaliação específica"
+    ]
+  },
+  {
+    "name": "Instituto Federal - Técnico Administrativo em Educação",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Administração Pública"
+    ],
+    "content": [
+      "interpretação, coesão e coerência",
+      "sintaxe, concordância, regência, crase e pontuação",
+      "proposições, equivalências, conjuntos, porcentagem e estatística",
+      "Windows, Office, internet, segurança da informação e backup",
+      "princípios, atos, poderes, agentes e serviços públicos",
+      "organização, planejamento, gestão por processos e governança"
+    ]
+  },
+  {
+    "name": "Caixa Econômica - Técnico Bancário",
+    "subs": [
+      "Língua Portuguesa",
+      "Língua Inglesa",
+      "Matemática Financeira",
+      "Conhecimentos Bancários",
+      "Informática",
+      "Atendimento e Vendas"
+    ],
+    "content": [
+      "interpretação, gramática, coesão e redação empresarial",
+      "compreensão de textos e vocabulário financeiro",
+      "juros, descontos, taxas, séries, amortização SAC e Price",
+      "Sistema Financeiro Nacional, crédito, investimentos, Pix e Open Finance",
+      "Office, internet, segurança, nuvem e proteção de dados",
+      "negociação, relacionamento, experiência do cliente e ética"
+    ]
+  },
+  {
+    "name": "Caixa Econômica - Técnico Bancário TI",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Governança de TI",
+      "Desenvolvimento de Sistemas",
+      "Banco de Dados",
+      "Redes e Segurança"
+    ],
+    "content": [
+      "interpretação, redação técnica e comunicação oficial",
+      "lógica proposicional, conjuntos, combinatória e probabilidade",
+      "ITIL, COBIT, gestão de riscos, projetos e serviços",
+      "engenharia de software, requisitos, testes, APIs e orientação a objetos",
+      "modelagem relacional, SQL, normalização, transações e NoSQL",
+      "TCP/IP, protocolos, firewalls, criptografia, LGPD e resposta a incidentes"
+    ]
+  },
+  {
+    "name": "Banco do Brasil - Escriturário",
+    "subs": [
+      "Língua Portuguesa",
+      "Língua Inglesa",
+      "Matemática Financeira",
+      "Conhecimentos Bancários",
+      "Informática",
+      "Atendimento e Vendas"
+    ],
+    "content": [
+      "interpretação, gramática, coesão e redação empresarial",
+      "compreensão de textos e vocabulário financeiro",
+      "juros, descontos, taxas, séries, amortização SAC e Price",
+      "Sistema Financeiro Nacional, crédito, investimentos, Pix e Open Finance",
+      "Office, internet, segurança, nuvem e proteção de dados",
+      "negociação, relacionamento, experiência do cliente e ética"
+    ]
+  },
+  {
+    "name": "Banco do Nordeste - Analista Bancário",
+    "subs": [
+      "Língua Portuguesa",
+      "Língua Inglesa",
+      "Matemática Financeira",
+      "Conhecimentos Bancários",
+      "Informática",
+      "Atendimento e Vendas"
+    ],
+    "content": [
+      "interpretação, gramática, coesão e redação empresarial",
+      "compreensão de textos e vocabulário financeiro",
+      "juros, descontos, taxas, séries, amortização SAC e Price",
+      "Sistema Financeiro Nacional, crédito, investimentos, Pix e Open Finance",
+      "Office, internet, segurança, nuvem e proteção de dados",
+      "negociação, relacionamento, experiência do cliente e ética"
+    ]
+  },
+  {
+    "name": "BNDES - Analista",
+    "subs": [
+      "Língua Portuguesa",
+      "Língua Inglesa",
+      "Matemática Financeira",
+      "Conhecimentos Bancários",
+      "Informática",
+      "Atendimento e Vendas"
+    ],
+    "content": [
+      "interpretação, gramática, coesão e redação empresarial",
+      "compreensão de textos e vocabulário financeiro",
+      "juros, descontos, taxas, séries, amortização SAC e Price",
+      "Sistema Financeiro Nacional, crédito, investimentos, Pix e Open Finance",
+      "Office, internet, segurança, nuvem e proteção de dados",
+      "negociação, relacionamento, experiência do cliente e ética"
+    ]
+  },
+  {
+    "name": "Correios - Agente de Correios",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Administração Pública"
+    ],
+    "content": [
+      "interpretação, coesão e coerência",
+      "sintaxe, concordância, regência, crase e pontuação",
+      "proposições, equivalências, conjuntos, porcentagem e estatística",
+      "Windows, Office, internet, segurança da informação e backup",
+      "princípios, atos, poderes, agentes e serviços públicos",
+      "organização, planejamento, gestão por processos e governança"
+    ]
+  },
+  {
+    "name": "Correios - Analista de Sistemas",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Governança de TI",
+      "Desenvolvimento de Sistemas",
+      "Banco de Dados",
+      "Redes e Segurança"
+    ],
+    "content": [
+      "interpretação, redação técnica e comunicação oficial",
+      "lógica proposicional, conjuntos, combinatória e probabilidade",
+      "ITIL, COBIT, gestão de riscos, projetos e serviços",
+      "engenharia de software, requisitos, testes, APIs e orientação a objetos",
+      "modelagem relacional, SQL, normalização, transações e NoSQL",
+      "TCP/IP, protocolos, firewalls, criptografia, LGPD e resposta a incidentes"
+    ]
+  },
+  {
+    "name": "Petrobras - Técnico Administrativo",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Administração Pública"
+    ],
+    "content": [
+      "interpretação, coesão e coerência",
+      "sintaxe, concordância, regência, crase e pontuação",
+      "proposições, equivalências, conjuntos, porcentagem e estatística",
+      "Windows, Office, internet, segurança da informação e backup",
+      "princípios, atos, poderes, agentes e serviços públicos",
+      "organização, planejamento, gestão por processos e governança"
+    ]
+  },
+  {
+    "name": "Petrobras - Analista de Sistemas",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Governança de TI",
+      "Desenvolvimento de Sistemas",
+      "Banco de Dados",
+      "Redes e Segurança"
+    ],
+    "content": [
+      "interpretação, redação técnica e comunicação oficial",
+      "lógica proposicional, conjuntos, combinatória e probabilidade",
+      "ITIL, COBIT, gestão de riscos, projetos e serviços",
+      "engenharia de software, requisitos, testes, APIs e orientação a objetos",
+      "modelagem relacional, SQL, normalização, transações e NoSQL",
+      "TCP/IP, protocolos, firewalls, criptografia, LGPD e resposta a incidentes"
+    ]
+  },
+  {
+    "name": "SERPRO - Analista de Tecnologia",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Governança de TI",
+      "Desenvolvimento de Sistemas",
+      "Banco de Dados",
+      "Redes e Segurança"
+    ],
+    "content": [
+      "interpretação, redação técnica e comunicação oficial",
+      "lógica proposicional, conjuntos, combinatória e probabilidade",
+      "ITIL, COBIT, gestão de riscos, projetos e serviços",
+      "engenharia de software, requisitos, testes, APIs e orientação a objetos",
+      "modelagem relacional, SQL, normalização, transações e NoSQL",
+      "TCP/IP, protocolos, firewalls, criptografia, LGPD e resposta a incidentes"
+    ]
+  },
+  {
+    "name": "Serviço Geológico do Brasil - Analista",
+    "subs": [
+      "Língua Portuguesa",
+      "Legislação Ambiental",
+      "Políticas Públicas",
+      "Geoprocessamento",
+      "Conhecimentos Ambientais",
+      "Gestão Pública"
+    ],
+    "content": [
+      "interpretação, gramática e redação oficial",
+      "licenciamento, crimes ambientais, unidades de conservação e responsabilidade",
+      "Política Nacional do Meio Ambiente, recursos hídricos e mudanças climáticas",
+      "cartografia, SIG, sensoriamento remoto e análise espacial",
+      "biodiversidade, geologia, hidrologia, mineração e impactos ambientais",
+      "planejamento, fiscalização, indicadores e gestão de projetos"
+    ]
+  },
+  {
+    "name": "Serviço Geológico do Brasil - Técnico em Geociências",
+    "subs": [
+      "Língua Portuguesa",
+      "Legislação Ambiental",
+      "Políticas Públicas",
+      "Geoprocessamento",
+      "Conhecimentos Ambientais",
+      "Gestão Pública"
+    ],
+    "content": [
+      "interpretação, gramática e redação oficial",
+      "licenciamento, crimes ambientais, unidades de conservação e responsabilidade",
+      "Política Nacional do Meio Ambiente, recursos hídricos e mudanças climáticas",
+      "cartografia, SIG, sensoriamento remoto e análise espacial",
+      "biodiversidade, geologia, hidrologia, mineração e impactos ambientais",
+      "planejamento, fiscalização, indicadores e gestão de projetos"
+    ]
+  },
+  {
+    "name": "IBAMA - Analista Ambiental",
+    "subs": [
+      "Língua Portuguesa",
+      "Legislação Ambiental",
+      "Políticas Públicas",
+      "Geoprocessamento",
+      "Conhecimentos Ambientais",
+      "Gestão Pública"
+    ],
+    "content": [
+      "interpretação, gramática e redação oficial",
+      "licenciamento, crimes ambientais, unidades de conservação e responsabilidade",
+      "Política Nacional do Meio Ambiente, recursos hídricos e mudanças climáticas",
+      "cartografia, SIG, sensoriamento remoto e análise espacial",
+      "biodiversidade, geologia, hidrologia, mineração e impactos ambientais",
+      "planejamento, fiscalização, indicadores e gestão de projetos"
+    ]
+  },
+  {
+    "name": "ICMBio - Analista Ambiental",
+    "subs": [
+      "Língua Portuguesa",
+      "Legislação Ambiental",
+      "Políticas Públicas",
+      "Geoprocessamento",
+      "Conhecimentos Ambientais",
+      "Gestão Pública"
+    ],
+    "content": [
+      "interpretação, gramática e redação oficial",
+      "licenciamento, crimes ambientais, unidades de conservação e responsabilidade",
+      "Política Nacional do Meio Ambiente, recursos hídricos e mudanças climáticas",
+      "cartografia, SIG, sensoriamento remoto e análise espacial",
+      "biodiversidade, geologia, hidrologia, mineração e impactos ambientais",
+      "planejamento, fiscalização, indicadores e gestão de projetos"
+    ]
+  },
+  {
+    "name": "Instituto Nacional de Pesquisas Espaciais - Tecnologista",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Governança de TI",
+      "Desenvolvimento de Sistemas",
+      "Banco de Dados",
+      "Redes e Segurança"
+    ],
+    "content": [
+      "interpretação, redação técnica e comunicação oficial",
+      "lógica proposicional, conjuntos, combinatória e probabilidade",
+      "ITIL, COBIT, gestão de riscos, projetos e serviços",
+      "engenharia de software, requisitos, testes, APIs e orientação a objetos",
+      "modelagem relacional, SQL, normalização, transações e NoSQL",
+      "TCP/IP, protocolos, firewalls, criptografia, LGPD e resposta a incidentes"
+    ]
+  },
+  {
+    "name": "Agência Nacional de Águas - Especialista",
+    "subs": [
+      "Língua Portuguesa",
+      "Legislação Ambiental",
+      "Políticas Públicas",
+      "Geoprocessamento",
+      "Conhecimentos Ambientais",
+      "Gestão Pública"
+    ],
+    "content": [
+      "interpretação, gramática e redação oficial",
+      "licenciamento, crimes ambientais, unidades de conservação e responsabilidade",
+      "Política Nacional do Meio Ambiente, recursos hídricos e mudanças climáticas",
+      "cartografia, SIG, sensoriamento remoto e análise espacial",
+      "biodiversidade, geologia, hidrologia, mineração e impactos ambientais",
+      "planejamento, fiscalização, indicadores e gestão de projetos"
+    ]
+  },
+  {
+    "name": "Agência Nacional de Mineração - Especialista",
+    "subs": [
+      "Língua Portuguesa",
+      "Legislação Ambiental",
+      "Políticas Públicas",
+      "Geoprocessamento",
+      "Conhecimentos Ambientais",
+      "Gestão Pública"
+    ],
+    "content": [
+      "interpretação, gramática e redação oficial",
+      "licenciamento, crimes ambientais, unidades de conservação e responsabilidade",
+      "Política Nacional do Meio Ambiente, recursos hídricos e mudanças climáticas",
+      "cartografia, SIG, sensoriamento remoto e análise espacial",
+      "biodiversidade, geologia, hidrologia, mineração e impactos ambientais",
+      "planejamento, fiscalização, indicadores e gestão de projetos"
+    ]
+  },
+  {
+    "name": "Agência Nacional de Vigilância Sanitária - Especialista",
+    "subs": [
+      "Língua Portuguesa",
+      "Políticas de Saúde",
+      "Sistema Único de Saúde",
+      "Legislação Profissional",
+      "Conhecimentos Específicos",
+      "Ética"
+    ],
+    "content": [
+      "interpretação, gramática, coesão, redação oficial e comunicação",
+      "princípios, diretrizes, regionalização e financiamento do SUS",
+      "atenção básica, vigilância, redes de atenção e participação social",
+      "legislação do conselho, atribuições e responsabilidade técnica",
+      "procedimentos, protocolos, biossegurança e atendimento conforme o cargo",
+      "princípios bioéticos, sigilo, responsabilidade e direitos do paciente"
+    ]
+  },
+  {
+    "name": "Agência Nacional de Telecomunicações - Especialista",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Governança de TI",
+      "Desenvolvimento de Sistemas",
+      "Banco de Dados",
+      "Redes e Segurança"
+    ],
+    "content": [
+      "interpretação, redação técnica e comunicação oficial",
+      "lógica proposicional, conjuntos, combinatória e probabilidade",
+      "ITIL, COBIT, gestão de riscos, projetos e serviços",
+      "engenharia de software, requisitos, testes, APIs e orientação a objetos",
+      "modelagem relacional, SQL, normalização, transações e NoSQL",
+      "TCP/IP, protocolos, firewalls, criptografia, LGPD e resposta a incidentes"
+    ]
+  },
+  {
+    "name": "Agência Nacional de Transportes Terrestres - Especialista",
+    "subs": [
+      "Língua Portuguesa",
+      "Raciocínio Lógico",
+      "Informática",
+      "Direito Constitucional",
+      "Direito Administrativo",
+      "Administração Pública"
+    ],
+    "content": [
+      "interpretação, coesão e coerência",
+      "sintaxe, concordância, regência, crase e pontuação",
+      "proposições, equivalências, conjuntos, porcentagem e estatística",
+      "Windows, Office, internet, segurança da informação e backup",
+      "princípios, atos, poderes, agentes e serviços públicos",
+      "organização, planejamento, gestão por processos e governança"
+    ]
+  }
+]

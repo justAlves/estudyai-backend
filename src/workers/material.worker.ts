@@ -9,6 +9,7 @@ import { users } from "../database/tables/users.table";
 import { materialReadyMessage, whatsAppService } from "../modules/notifications/services/whatsapp.service";
 import { searchQuestions } from "../modules/rag/services/rag.service";
 import { GeminiGenerationError, generateActivities, generateMaterial, materialRetryDelayMs, sourceList } from "../modules/study/services/material.service";
+import { syllabusContext } from "../modules/onboarding/services/contest-syllabus.service";
 import { workerLogger } from "../config/logger";
 
 const logger = workerLogger("materials");
@@ -23,14 +24,15 @@ async function processNextJob() {
   logger.info({ jobId: job.id, taskId: job.taskId }, "gerando material");
 
   try {
-    const [task] = await db.select({ subject: studyTasks.subject, type: studyTasks.type, phone: users.phone, socialName: users.socialName, name: users.name }).from(studyTasks).innerJoin(contests, eq(studyTasks.contestId, contests.id)).innerJoin(users, eq(contests.userId, users.id)).where(eq(studyTasks.id, job.taskId)).limit(1);
+    const [task] = await db.select({ subject: studyTasks.subject, type: studyTasks.type, contestName: contests.name, phone: users.phone, socialName: users.socialName, name: users.name }).from(studyTasks).innerJoin(contests, eq(studyTasks.contestId, contests.id)).innerJoin(users, eq(contests.userId, users.id)).where(eq(studyTasks.id, job.taskId)).limit(1);
     if (!task) throw new Error("Tarefa não encontrada");
 
+    const syllabus = await syllabusContext(task.contestName, task.subject);
     const questions = await searchQuestions(task.subject, 6);
-    if (!questions.length) throw new Error("Não há questões relevantes no RAG");
-    logger.info({ jobId: job.id, taskId: job.taskId, questions: questions.length }, "contexto RAG recuperado");
-    const content = await generateMaterial(task.subject, questions);
-    const activities = task.type === "QUESTIONS" ? await generateActivities(task.subject, questions) : [];
+    if (!questions.length && !syllabus) throw new Error("Não há contexto de edital ou questões para esta matéria");
+    logger.info({ jobId: job.id, taskId: job.taskId, questions: questions.length, syllabus: !!syllabus }, "contexto RAG recuperado");
+    const content = await generateMaterial(task.subject, questions, syllabus);
+    const activities = task.type === "QUESTIONS" ? await generateActivities(task.subject, questions, syllabus) : [];
     await db.insert(studyMaterials).values({ id: ulid(), taskId: job.taskId, content, sources: sourceList(questions), activities }).onConflictDoNothing();
     await db.update(materialGenerationJobs).set({ status: "COMPLETED" }).where(eq(materialGenerationJobs.id, job.id));
     if (whatsAppService.isConfigured) await whatsAppService.sendText(task.phone, materialReadyMessage(task.socialName ?? task.name, task.subject, job.taskId));

@@ -8,8 +8,11 @@ import { materialGenerationJobs } from "../../../database/tables/material-genera
 import { studyMaterials } from "../../../database/tables/study-materials.table";
 import { studyActivityAttempts } from "../../../database/tables/study-activity-attempts.table";
 import { studyTasks } from "../../../database/tables/study-tasks.table";
+import { users } from "../../../database/tables/users.table";
 import { accessControl, userIdFrom } from "../../../plugins/access-control";
 import { activityScore } from "../services/material.service";
+import { adaptPlan } from "../services/adaptive-plan.service";
+import { studyAssessments } from "../../../database/tables/study-assessments.table";
 import { nextAvailableStudyDay } from "../services/task-scheduling.service";
 
 async function ownedTask(taskId: string, userId: string) {
@@ -66,10 +69,20 @@ export const studyController = new Elysia({ prefix: "/study-tasks", tags: ["Stud
       return { message: "Respostas inválidas para esta atividade." };
     }
     const score = activityScore(material.activities, body.answers);
-    await db.insert(studyActivityAttempts).values({ id: ulid(), taskId: params.taskId, answers: body.answers, score }).onConflictDoNothing();
+    const inserted = await db.insert(studyActivityAttempts).values({ id: ulid(), taskId: params.taskId, answers: body.answers, score }).onConflictDoNothing().returning({ id: studyActivityAttempts.id });
+    if (inserted.length) await adaptPlan((await ownedTask(params.taskId, userId))!.contestId);
     const [attempt] = await db.select().from(studyActivityAttempts).where(eq(studyActivityAttempts.taskId, params.taskId)).limit(1);
     return { answers: attempt!.answers, score: attempt!.score, total: material.activities.length, feedback: material.activities.map((activity, index) => ({ index, answer: activity.answer, explanation: activity.explanation })) };
   }, { auth: true, body: z.object({ answers: z.array(z.number().int()) }), detail: { summary: "Finaliza o bloco de questões" } })
+  .post("/assessments", async ({ body, headers, jwt, set }) => {
+    const userId = await userIdFrom(headers.authorization, jwt.verify);
+    const [contest] = userId && await db.select({ id: contests.id, premium: users.premium }).from(contests).innerJoin(users, eq(contests.userId, users.id)).where(and(eq(contests.id, body.contestId), eq(contests.userId, userId))).limit(1) || [];
+    if (!contest) { set.status = 404; return { message: "Concurso não encontrado." }; }
+    if (!contest.premium) { set.status = 403; return { message: "O plano adaptativo requer o plano Pro." }; }
+    await db.insert(studyAssessments).values({ id: ulid(), ...body });
+    await adaptPlan(contest.id);
+    return { status: "RECORDED" };
+  }, { premium: true, body: z.object({ contestId: z.string().min(1), subject: z.string().min(2).max(120), type: z.enum(["SIMULATION", "ESSAY"]), score: z.number().int().min(0), total: z.number().int().positive() }).refine(({ score, total }) => score <= total, "A nota não pode superar o total."), detail: { summary: "Registra resultado de simulado ou redação" } })
   .patch("/:taskId", async ({ body, params, headers, jwt, set }) => {
     const userId = await userIdFrom(headers.authorization, jwt.verify);
     const task = userId && await ownedTask(params.taskId, userId);

@@ -6,6 +6,8 @@ import { contests } from "../database/tables/contests.table";
 import { planGenerationJobs } from "../database/tables/plan-generation-jobs.table";
 import { studyTasks } from "../database/tables/study-tasks.table";
 import { users } from "../database/tables/users.table";
+import { knownSubjectsForContest, uniqueSubjects } from "../modules/onboarding/services/known-contests.service";
+import { syllabusSubjectsForContest } from "../modules/onboarding/services/contest-syllabus.service";
 import { planReadyMessage, whatsAppService } from "../modules/notifications/services/whatsapp.service";
 import { workerLogger } from "../config/logger";
 
@@ -45,10 +47,11 @@ async function processNextJob() {
   try {
     const [contest] = await db.select().from(contests).where(eq(contests.id, job.contestId)).limit(1);
     if (!contest) throw new Error("Plano não encontrado");
-    const subjects = await db.select().from(contestSupportSubjects).where(eq(contestSupportSubjects.contestId, contest.id));
+    const selectedSubjects = await db.select().from(contestSupportSubjects).where(eq(contestSupportSubjects.contestId, contest.id));
+    const subjects = uniqueSubjects(selectedSubjects.map(({ name }) => name), await syllabusSubjectsForContest(contest.name), await knownSubjectsForContest(contest.name));
     if (!subjects.length) throw new Error("Plano sem matérias");
 
-    await db.insert(studyTasks).values(initialTasks(subjects.map(({ name }) => name), contest.dailyStudyMinutes).map((task) => ({ id: ulid(), contestId: contest.id, ...task })));
+    await db.insert(studyTasks).values(initialTasks(subjects, contest.dailyStudyMinutes).map((task) => ({ id: ulid(), contestId: contest.id, ...task })));
     await db.update(planGenerationJobs).set({ status: "COMPLETED" }).where(eq(planGenerationJobs.id, job.id));
 
     const [user] = await db.select({ phone: users.phone, socialName: users.socialName, name: users.name }).from(users).where(eq(users.id, contest.userId)).limit(1);

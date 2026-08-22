@@ -101,3 +101,12 @@ bun run collect:check
 ```
 
 Os arquivos ficam em `data/ingestion/` (ignorado pelo Git). A data passada no comando é obrigatoriamente anterior a hoje; ela é declarada pelo operador, então a página oficial ainda precisa ser conferida. Use somente provas já realizadas e materiais cuja forma de uso permita indexação; uma página pública não equivale automaticamente a uma licença de republicação.
+## Catálogo de matérias por edital
+
+Para atualizar os conteúdos programáticos de concursos conhecidos, execute:
+
+```bash
+bun run collect:notices
+```
+
+O coletor percorre as páginas oficiais cadastradas, encontra PDFs de edital, extrai as disciplinas com Gemini e atualiza o catálogo global. Na geração do plano, essas matérias são unidas às matérias escolhidas pelo aluno.
