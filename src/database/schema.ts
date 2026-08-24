@@ -14,3 +14,4 @@ export * from "./tables/material-generation-jobs.table";
 export * from "./tables/study-activity-attempts.table";
 export * from "./tables/study-assessments.table";
 export * from "./tables/known-contests.table";
+export * from "./tables/contest-notice-documents.table";

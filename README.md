@@ -31,6 +31,19 @@ ABACATEPAY_WEBHOOK_SECRET=...
 
 Cadastre o webhook HTTPS `https://api.estudeai.com/billing/webhooks/abacatepay?webhookSecret=...` para os eventos `subscription.completed`, `subscription.renewed`, `subscription.trial_started` e `subscription.cancelled`.
 
+## Editais enviados pelos usuários
+
+Os PDFs enviados no onboarding são armazenados no Cloudflare R2 usando a API compatível com S3. Configure:
+
+```env
+R2_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
+R2_BUCKET=estudeai-notices
+R2_ACCESS_KEY_ID=...
+R2_SECRET_ACCESS_KEY=...
+```
+
+O banco guarda apenas o vínculo do edital com o concurso, o nome do arquivo, o status e a chave privada no bucket.
+
 ## Docker
 
 ```bash

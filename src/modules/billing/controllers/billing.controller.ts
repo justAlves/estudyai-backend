@@ -9,6 +9,7 @@ import { users } from "../../../database/tables/users.table";
 import { webhookEvents } from "../../../database/tables/webhook-events.table";
 import { accessControl, userIdFrom } from "../../../plugins/access-control";
 import { BillingError, cancelProSubscription, createProCheckout } from "../services/abacatepay.service";
+import { billingEventState } from "../services/billing-rules";
 
 type Webhook = {
   id?: string;
@@ -93,9 +94,8 @@ export const billingController = new Elysia({ prefix: "/billing", tags: ["Billin
       return { message: "Evento inválido" };
     }
 
-    const active = event.event === "subscription.completed" || event.event === "subscription.renewed" || event.event === "subscription.trial_started";
-    const cancelled = event.event === "subscription.cancelled";
-    if (!active && !cancelled) return { received: true };
+    const state = billingEventState(event.event);
+    if (!state) return { received: true };
 
     const processed = await db.transaction(async (tx) => {
       const [eventLog] = await tx.insert(webhookEvents).values([{ id: eventId }]).onConflictDoNothing().returning();
@@ -108,8 +108,8 @@ export const billingController = new Elysia({ prefix: "/billing", tags: ["Billin
       )).limit(1);
       if (!subscription) throw new Error("Assinatura desconhecida");
 
-      await tx.update(subscriptions).set({ providerSubscriptionId: subscriptionId, status: active ? "ACTIVE" : "CANCELLED" }).where(eq(subscriptions.id, subscription.id));
-      await tx.update(users).set({ premium: active }).where(eq(users.id, subscription.userId));
+      await tx.update(subscriptions).set({ providerSubscriptionId: subscriptionId, status: state }).where(eq(subscriptions.id, subscription.id));
+      await tx.update(users).set({ premium: state === "ACTIVE" }).where(eq(users.id, subscription.userId));
       return false;
     });
 

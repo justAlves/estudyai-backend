@@ -9,6 +9,11 @@ import { users } from "../../../database/tables/users.table";
 
 type Result = { subject: string; score: number; total: number };
 
+export function adaptiveResultsWithinPlan(planSubjects: string[], results: Result[]) {
+  const allowed = new Set(planSubjects);
+  return results.filter(({ subject }) => allowed.has(subject));
+}
+
 export function weakSubjects(results: Result[]) {
   const totals = new Map<string, { score: number; total: number }>();
   for (const result of results) {
@@ -21,9 +26,16 @@ export function weakSubjects(results: Result[]) {
 export async function adaptPlan(contestId: string) {
   const [contest] = await db.select({ premium: users.premium }).from(contests).innerJoin(users, eq(contests.userId, users.id)).where(eq(contests.id, contestId)).limit(1);
   if (!contest?.premium) return;
+  const planRows = await db.select({ subject: studyTasks.subject }).from(studyTasks).where(eq(studyTasks.contestId, contestId));
+  const planSubjects = [...new Set(planRows.map(({ subject }) => subject))];
+  if (!planSubjects.length) return;
   const activities = await db.select({ subject: studyTasks.subject, score: studyActivityAttempts.score, activities: studyMaterials.activities }).from(studyActivityAttempts).innerJoin(studyTasks, eq(studyActivityAttempts.taskId, studyTasks.id)).innerJoin(studyMaterials, eq(studyMaterials.taskId, studyTasks.id)).where(eq(studyTasks.contestId, contestId));
   const assessments = await db.select({ subject: studyAssessments.subject, score: studyAssessments.score, total: studyAssessments.total }).from(studyAssessments).where(eq(studyAssessments.contestId, contestId));
-  const subjects = weakSubjects([...activities.map(({ subject, score, activities }) => ({ subject, score, total: activities.length })), ...assessments]);
+  const results = adaptiveResultsWithinPlan(
+    planSubjects,
+    [...activities.map(({ subject, score, activities }) => ({ subject, score, total: activities.length })), ...assessments],
+  );
+  const subjects = weakSubjects(results);
   if (!subjects.length) return;
   const pending = await db.select({ id: studyTasks.id, type: studyTasks.type }).from(studyTasks).leftJoin(studyMaterials, eq(studyMaterials.taskId, studyTasks.id)).where(and(eq(studyTasks.contestId, contestId), eq(studyTasks.status, "PENDING"), gte(studyTasks.scheduledFor, new Date().toISOString().slice(0, 10)), isNull(studyMaterials.id))).limit(6);
   await Promise.all(pending.map((task, index) => {

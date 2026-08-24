@@ -19,5 +19,9 @@ export const env = z
     ABACATEPAY_WEBHOOK_SECRET: z.string().min(1).optional(),
     GEMINI_API_KEY: z.string().min(1).optional(),
     GEMINI_GENERATION_MODEL: z.string().min(1).default("gemini-3.6-flash"),
+    R2_ENDPOINT: z.url().optional(),
+    R2_BUCKET: z.string().min(1).optional(),
+    R2_ACCESS_KEY_ID: z.string().min(1).optional(),
+    R2_SECRET_ACCESS_KEY: z.string().min(1).optional(),
   })
   .parse(process.env);

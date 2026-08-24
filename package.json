@@ -2,13 +2,16 @@
   "name": "estudeai-api",
   "version": "1.0.50",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "bun test src",
+    "test:e2e": "E2E_DATABASE_URL=\"$E2E_DATABASE_URL\" bun test e2e",
+    "test:all": "bun test src e2e",
     "dev": "bun run --watch src/index.ts",
     "worker:plans": "bun run src/workers/plan.worker.ts",
     "worker:materials": "bun run src/workers/material.worker.ts",
     "worker:rag": "bun run src/workers/rag-ingestion.worker.ts",
     "rag:check": "bun run src/workers/rag-ingestion.worker.test.ts",
     "rag:syllabus": "bun run scripts/import-syllabus-rag.ts",
+    "rag:notices": "bun run scripts/index-notices-rag.ts",
     "rag:search:check": "bun run src/modules/rag/services/rag.service.test.ts",
     "study:check": "bun run src/modules/study/services/material.service.test.ts",
     "study:adaptive:check": "bun run src/modules/study/services/adaptive-plan.service.test.ts",
@@ -26,6 +29,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1116.0",
     "@elysia/cors": "^1.4.2",
     "@elysiajs/jwt": "^1.4.2",
     "@elysiajs/opentelemetry": "^1.4.11",

@@ -6,3 +6,8 @@ test("generates four weekdays-only weeks of starter tasks", () => {
   expect(tasks).toHaveLength(40);
   expect(tasks.every((task) => ![0, 6].includes(new Date(`${task.scheduledFor}T00:00:00`).getDay()))).toBeTrue();
 });
+
+test("does not generate a plan without subjects or with an invalid daily goal", () => {
+  expect(() => initialTasks([], 120)).toThrow("Plano sem matérias");
+  expect(() => initialTasks(["Português"], 0)).toThrow("Meta diária inválida");
+});

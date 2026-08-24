@@ -9,7 +9,7 @@
 - A tarefa só pode ser concluída ou não concluída; tarefas não concluídas serão reagendadas no futuro.
 - O plano gratuito é fixo. O Pro terá reconstrução semanal e adaptação por desempenho.
 - O overall é percentual, definido por tarefa e complementado futuramente por questões, simulados e redações com pesos fixos.
-- Simulados: gratuito até 2/mês; Pro até 8/mês. A implementação fica posterior ao fluxo de tarefas e materiais.
+- Simulados: gratuito até 2/mês; Pro até 20/mês. Redações: gratuito 1/mês; Pro 8/mês. A implementação fica posterior ao fluxo de tarefas e materiais.
 
 ## Fluxo implementado
 

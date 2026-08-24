@@ -30,15 +30,35 @@ export function activityScore(activities: StudyActivity[], answers: number[]) {
   return answers.filter((answer, index) => answer === activities[index].answer).length;
 }
 
-export async function generateMaterial(subject: string, questions: RagQuestion[], syllabus = "") {
+export async function generateMaterial(subject: string, questions: RagQuestion[], syllabus = "", estimatedMinutes = 60) {
   const apiKey = env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("Defina GEMINI_API_KEY para gerar materiais.");
   const context = questions.map((question) => question.content).join("\n\n---\n\n");
-  const prompt = `Você é um professor preparatório. Crie uma aula completa, prática e didática de ${subject} em Markdown. Use o conteúdo programático para definir o escopo e as questões abaixo como contexto; não invente leis, números ou fatos. Inclua: objetivos, explicação estruturada, exemplos, erros recorrentes e um resumo final. Quando um conceito tiver hierarquia, fluxo ou relação entre elementos, use um bloco \`\`\`mermaid com um diagrama simples; nunca use diagramas ASCII. Não revele gabaritos se eles não estiverem no contexto.${syllabus ? `\n\nCONTEÚDO PROGRAMÁTICO DE REFERÊNCIA:\n${syllabus}` : ""}\n\nQUESTÕES DE CONTEXTO:\n${context}`;
+  const target = Math.max(45, Math.min(90, estimatedMinutes));
+  const prompt = `Você é um professor experiente de cursos preparatórios para concursos e vestibulares no Brasil. Crie uma aula realmente completa sobre ${subject}, em português brasileiro e Markdown, planejada para aproximadamente ${target} minutos de estudo concentrado.
+
+Não faça um resumo superficial. Desenvolva todos os tópicos e subtópicos explicitamente presentes no CONTEÚDO PROGRAMÁTICO DE REFERÊNCIA. O conteúdo deve ser autossuficiente para o estudante estudar sem abrir outra fonte.
+
+Estruture obrigatoriamente a aula com:
+1. Título e o que o aluno será capaz de fazer ao final;
+2. Mapa dos tópicos cobertos;
+3. Pré-requisitos essenciais, apenas se necessários;
+4. Explicação progressiva de cada tópico e subtópico, com definições claras, regras, classificações, exceções e relações entre conceitos;
+5. Pelo menos 3 exemplos resolvidos passo a passo quando a matéria permitir; em Direito, inclua casos práticos; em exatas, cálculos completos; em línguas, frases analisadas;
+6. Tabela comparativa ou quadro de diferenças quando houver conceitos parecidos;
+7. Pegadinhas e erros recorrentes de provas;
+8. Checklist de revisão e resumo final;
+9. Cinco perguntas discursivas de autoavaliação, sem gabarito imediato.
+
+Use subtítulos Markdown, listas e tabelas para facilitar uma sessão longa de estudo. Quando houver hierarquia, fluxo ou relação entre elementos, use um bloco de código Mermaid simples; nunca use diagramas ASCII. Não invente leis, artigos, números, fórmulas, datas ou fatos que não estejam no edital ou no contexto. Se um detalhe não puder ser confirmado, sinalize a limitação em vez de inventar. Não mencione que você recebeu um prompt, contexto ou edital.
+
+${syllabus ? `CONTEÚDO PROGRAMÁTICO DE REFERÊNCIA:\n${syllabus}` : "Não há edital estruturado disponível; use apenas o escopo comprovado pelas questões de contexto e deixe explícitas as limitações."}
+
+QUESTÕES DE CONTEXTO:\n${context}`;
   const generate = (model: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+    body: JSON.stringify({ generationConfig: { temperature: 0.35, maxOutputTokens: 7_000 }, contents: [{ parts: [{ text: prompt }] }] }),
   });
   const models = generationModels(env.GEMINI_GENERATION_MODEL);
   let response = await generate(models[0]);
@@ -52,6 +72,7 @@ export async function generateMaterial(subject: string, questions: RagQuestion[]
   const body = (await response.json()) as { candidates?: { content?: { parts?: { text?: string }[] } }[] };
   const content = body.candidates?.[0]?.content?.parts?.map(({ text }) => text ?? "").join("").trim();
   if (!content) throw new Error("Gemini não retornou material.");
+  if (content.replace(/\s+/g, " ").trim().length < 3_000) throw new Error("Gemini retornou um material curto demais para a sessão planejada.");
   return content;
 }
 

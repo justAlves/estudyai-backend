@@ -1,6 +1,8 @@
 import { contestKey } from "./contest-subjects.service";
 import { db } from "../../../database";
 import { ragSyllabusChunks } from "../../../database/tables/rag-syllabus-chunks.table";
+import { contestNoticeDocuments } from "../../../database/tables/contest-notice-documents.table";
+import { noticeSubjectSections } from "./notice-subjects.service";
 import { embedQuery, vectorLiteral } from "../../rag/services/rag.service";
 import { eq, sql } from "drizzle-orm";
 
@@ -78,7 +80,15 @@ export async function syllabusSubjectsForContest(name: string) {
   return rows.map(({ subject }) => subject);
 }
 
-export async function syllabusContext(name: string, subject: string) {
+export async function syllabusContext(name: string, subject: string, contestId?: string) {
+  if (contestId) {
+    const [notice] = await db.select({ extractedText: contestNoticeDocuments.extractedText }).from(contestNoticeDocuments).where(eq(contestNoticeDocuments.contestId, contestId)).limit(1);
+    if (notice?.extractedText) {
+      const sections = noticeSubjectSections(notice.extractedText, [subject]);
+      const content = sections.length ? sections.map(({ content: section }) => section).join("\n\n") : notice.extractedText;
+      return `EDITAL ENVIADO PELO ESTUDANTE\nMatéria solicitada: ${subject}\n\n${content}`;
+    }
+  }
   const match = await syllabusKeyForContest(name);
   if (!match) return "";
   const embedding = vectorLiteral(await embedQuery(subject));

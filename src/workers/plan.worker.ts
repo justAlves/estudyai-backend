@@ -5,6 +5,7 @@ import { contestSupportSubjects } from "../database/tables/contest-support-subje
 import { contests } from "../database/tables/contests.table";
 import { planGenerationJobs } from "../database/tables/plan-generation-jobs.table";
 import { studyTasks } from "../database/tables/study-tasks.table";
+import { contestNoticeDocuments } from "../database/tables/contest-notice-documents.table";
 import { users } from "../database/tables/users.table";
 import { knownSubjectsForContest, uniqueSubjects } from "../modules/onboarding/services/known-contests.service";
 import { syllabusSubjectsForContest } from "../modules/onboarding/services/contest-syllabus.service";
@@ -16,6 +17,8 @@ const logger = workerLogger("plans");
 type TaskType = "STUDY" | "QUESTIONS" | "REVIEW";
 
 export function initialTasks(subjects: string[], minutes: number, from = new Date()) {
+  if (!subjects.length) throw new Error("Plano sem matérias");
+  if (!Number.isInteger(minutes) || minutes <= 0) throw new Error("Meta diária inválida");
   const tasks: { subject: string; type: TaskType; title: string; estimatedMinutes: number; scheduledFor: string }[] = [];
   const date = new Date(from.getFullYear(), from.getMonth(), from.getDate());
   let studyDay = 0;
@@ -48,7 +51,8 @@ async function processNextJob() {
     const [contest] = await db.select().from(contests).where(eq(contests.id, job.contestId)).limit(1);
     if (!contest) throw new Error("Plano não encontrado");
     const selectedSubjects = await db.select().from(contestSupportSubjects).where(eq(contestSupportSubjects.contestId, contest.id));
-    const subjects = uniqueSubjects(selectedSubjects.map(({ name }) => name), await syllabusSubjectsForContest(contest.name), await knownSubjectsForContest(contest.name));
+    const [notice] = await db.select({ subjects: contestNoticeDocuments.subjects }).from(contestNoticeDocuments).where(eq(contestNoticeDocuments.contestId, contest.id)).limit(1);
+    const subjects = uniqueSubjects(selectedSubjects.map(({ name }) => name), notice?.subjects ?? [], await syllabusSubjectsForContest(contest.name), await knownSubjectsForContest(contest.name));
     if (!subjects.length) throw new Error("Plano sem matérias");
 
     await db.insert(studyTasks).values(initialTasks(subjects, contest.dailyStudyMinutes).map((task) => ({ id: ulid(), contestId: contest.id, ...task })));
