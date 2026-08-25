@@ -1,4 +1,5 @@
-import { and, asc, eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+import type { Job } from "bullmq";
 import { ulid } from "ulid";
 import { db } from "../database";
 import { contestSupportSubjects } from "../database/tables/contest-support-subjects.table";
@@ -11,6 +12,7 @@ import { knownSubjectsForContest, uniqueSubjects } from "../modules/onboarding/s
 import { syllabusSubjectsForContest } from "../modules/onboarding/services/contest-syllabus.service";
 import { planReadyMessage, whatsAppService } from "../modules/notifications/services/whatsapp.service";
 import { workerLogger } from "../config/logger";
+import { createWorker, enqueuePlanGeneration, queueNames } from "../queues";
 
 const logger = workerLogger("plans");
 
@@ -39,13 +41,13 @@ export function initialTasks(subjects: string[], minutes: number, from = new Dat
   return tasks;
 }
 
-async function processNextJob() {
-  const [queued] = await db.select().from(planGenerationJobs).where(eq(planGenerationJobs.status, "QUEUED")).orderBy(asc(planGenerationJobs.createdAt)).limit(1);
-  if (!queued) return false;
+export async function processPlanJob(jobId: string, attempt = 0) {
+  const [queued] = await db.select().from(planGenerationJobs).where(and(eq(planGenerationJobs.id, jobId), eq(planGenerationJobs.status, "QUEUED"))).limit(1);
+  if (!queued) return;
 
   const [job] = await db.update(planGenerationJobs).set({ status: "PROCESSING" }).where(and(eq(planGenerationJobs.id, queued.id), eq(planGenerationJobs.status, "QUEUED"))).returning();
-  if (!job) return true;
-  logger.info({ jobId: job.id, contestId: job.contestId }, "gerando plano inicial");
+  if (!job) return;
+  logger.info({ jobId: job.id, contestId: job.contestId, attempt: attempt + 1 }, "iniciando geração do plano");
 
   try {
     const [contest] = await db.select().from(contests).where(eq(contests.id, job.contestId)).limit(1);
@@ -60,19 +62,25 @@ async function processNextJob() {
 
     const [user] = await db.select({ phone: users.phone, socialName: users.socialName, name: users.name }).from(users).where(eq(users.id, contest.userId)).limit(1);
     if (user && whatsAppService.isConfigured) await whatsAppService.sendText(user.phone, planReadyMessage(user.socialName ?? user.name, contest.name));
-    logger.info({ jobId: job.id, contestId: job.contestId, tasks: subjects.length * 20 }, "plano inicial concluído");
+    logger.info({ jobId: job.id, contestId: job.contestId, subjects: subjects.length, tasks: subjects.length * 20 }, "plano gerado com sucesso");
   } catch (error) {
-    logger.error({ err: error, jobId: job.id, contestId: job.contestId }, "falha ao gerar plano inicial");
-    await db.update(planGenerationJobs).set({ status: "FAILED" }).where(eq(planGenerationJobs.id, job.id));
+    logger.error({ err: error, jobId: job.id, contestId: job.contestId, attempt: attempt + 1 }, "falha ao gerar plano");
+    await db.update(planGenerationJobs).set({ status: attempt < 2 ? "QUEUED" : "FAILED" }).where(eq(planGenerationJobs.id, job.id));
+    throw error;
   }
 
-  return true;
+}
+
+async function enqueuePendingPlanJobs() {
+  const jobs = await db.select({ id: planGenerationJobs.id }).from(planGenerationJobs).where(eq(planGenerationJobs.status, "QUEUED"));
+  await Promise.all(jobs.map(({ id }) => enqueuePlanGeneration(id)));
+  logger.debug({ jobs: jobs.length }, "jobs de planos sincronizados com o broker");
 }
 
 if (import.meta.main) {
-  logger.info("worker iniciado; aguardando planos");
-  while (true) {
-    await processNextJob();
-    await Bun.sleep(2_000);
-  }
+  await enqueuePendingPlanJobs();
+  const worker = createWorker<{ jobId: string }>(queueNames.plans, async (job: Job<{ jobId: string }>) => processPlanJob(job.data.jobId, job.attemptsMade));
+  worker.on("error", (error) => logger.error({ err: error }, "erro de conexão do worker"));
+  worker.on("completed", (job) => logger.debug({ jobId: job.data.jobId }, "job de plano finalizado"));
+  logger.info("worker online · aguardando planos");
 }

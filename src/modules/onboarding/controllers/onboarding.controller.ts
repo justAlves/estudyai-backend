@@ -20,6 +20,7 @@ import { noticeStorageConfigured, uploadNotice } from "../services/notice-storag
 import { extractNoticeText } from "../services/notice-text.service";
 import { extractNoticeSubjects } from "../services/notice-subjects.service";
 import { indexNoticeInGlobalRag } from "../services/notice-rag.service";
+import { enqueuePlanGeneration } from "../../../queues";
 
 const userIdFrom = async (authorization: string | undefined, verify: (token: string) => Promise<unknown>) => {
   const token = authorization?.replace(/^Bearer\s+/i, "");
@@ -81,6 +82,7 @@ export const onboardingController = new Elysia({ prefix: "/onboarding", tags: ["
         return { message: "Token inválido ou ausente" };
       }
 
+      let planJobId = "";
       await db.transaction(async (tx) => {
         await tx.update(users).set({
           socialName: body.socialName,
@@ -94,8 +96,10 @@ export const onboardingController = new Elysia({ prefix: "/onboarding", tags: ["
         await tx.update(contests).set({ isActive: false }).where(eq(contests.userId, userId));
         const [contest] = await tx.insert(contests).values({ id: ulid(), userId, ...contestInput }).returning();
         await tx.insert(contestSupportSubjects).values(supportSubjects.map((name) => ({ id: ulid(), contestId: contest.id, name })));
-        await tx.insert(planGenerationJobs).values({ id: ulid(), contestId: contest.id });
+        planJobId = ulid();
+        await tx.insert(planGenerationJobs).values({ id: planJobId, contestId: contest.id });
       });
+      await enqueuePlanGeneration(planJobId);
 
       set.status = 201;
       return { completed: body.complete };
@@ -179,7 +183,8 @@ export const onboardingController = new Elysia({ prefix: "/onboarding", tags: ["
     } catch (error) {
       console.warn({ err: error, contestName }, "não foi possível indexar o edital no RAG global");
     }
-    await db.update(planGenerationJobs).set({ status: "QUEUED" }).where(eq(planGenerationJobs.contestId, contest.id));
+    const [planJob] = await db.update(planGenerationJobs).set({ status: "QUEUED" }).where(eq(planGenerationJobs.contestId, contest.id)).returning({ id: planGenerationJobs.id });
+    if (planJob) await enqueuePlanGeneration(planJob.id);
     await db.delete(studyTasks).where(eq(studyTasks.contestId, contest.id));
     set.status = 202;
     return { status: "RECEIVED", message: "Seu edital foi recebido e será usado para preparar seu plano." };

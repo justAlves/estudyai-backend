@@ -5,6 +5,7 @@ import { env } from "../config/env";
 import { db } from "../database";
 import { ragQuestions } from "../database/tables/rag-questions.table";
 import { workerLogger } from "../config/logger";
+import { createWorker, enqueueRagIngestion, queueNames } from "../queues";
 
 const embeddingModel = "gemini-embedding-2";
 const logger = workerLogger("rag");
@@ -74,7 +75,7 @@ async function embed(inputs: string[]) {
     const error = await response.text();
     const delay = response.status === 429 ? retryDelayMs(error) : null;
     if (!delay) throw new Error(`Gemini embeddings falhou (${response.status}): ${error}`);
-    logger.warn({ delayMs: delay }, "limite do Gemini atingido; aguardando para retomar");
+    logger.warn({ delayMs: delay }, "limite do Gemini · aguardando para retomar");
     await Bun.sleep(delay);
   }
 
@@ -96,13 +97,13 @@ async function indexFile(metadataPath: string) {
   const existing = await db.select({ contentHash: ragQuestions.contentHash }).from(ragQuestions).where(inArray(ragQuestions.contentHash, candidates.map(({ contentHash }) => contentHash)));
   const known = new Set(existing.map(({ contentHash }) => contentHash));
   const pending = candidates.filter(({ contentHash }) => !known.has(contentHash));
-  logger.info({ source: metadata.source, questions: candidates.length, pending: pending.length }, "processando arquivo de questões");
+  logger.debug({ source: metadata.source, questions: candidates.length, pending: pending.length }, "arquivo de questões preparado");
 
   for (let index = 0; index < pending.length; index += 50) {
     const batch = pending.slice(index, index + 50);
     const embeddings = await embed(batch.map(({ content }) => content));
     await db.insert(ragQuestions).values(batch.map((question, position) => ({ id: ulid(), ...question, embedding: embeddings[position], embeddingModel }))).onConflictDoNothing();
-    logger.info({ source: metadata.source, indexed: Math.min(index + batch.length, pending.length), total: pending.length }, "lote RAG indexado");
+    logger.debug({ source: metadata.source, indexed: Math.min(index + batch.length, pending.length), total: pending.length }, "lote RAG indexado");
   }
 
   return { indexed: pending.length, skipped: candidates.length - pending.length };
@@ -120,7 +121,13 @@ export async function indexQuestions() {
 }
 
 if (import.meta.main) {
-  logger.info("worker iniciado; procurando questões para indexar");
-  const result = await indexQuestions();
-  logger.info(result, "indexação RAG concluída");
+  const worker = createWorker<{ jobId: string }>(queueNames.rag, async () => {
+    logger.info("iniciando indexação do RAG");
+    const result = await indexQuestions();
+    logger.info(result, "RAG atualizado com sucesso");
+    return result;
+  });
+  worker.on("error", (error) => logger.error({ err: error }, "erro de conexão do worker"));
+  await enqueueRagIngestion();
+  logger.info("worker online · aguardando indexação RAG");
 }

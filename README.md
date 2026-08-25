@@ -52,8 +52,16 @@ docker run --rm -p 3333:3333 --env-file .env estudeai-api
 ```
 
 Execute `bun run db:migrate` como etapa de release antes de subir a imagem.
-Suba um segundo processo com a mesma imagem e comando `bun run worker:plans` para gerar planos em segundo plano.
-Os workers escrevem logs JSON no stdout; use `LOG_LEVEL=debug` para mais detalhe.
+Configure também um Redis compatível com BullMQ:
+
+```env
+REDIS_URL=rediss://usuario:senha@host:6379
+```
+
+O `docker-compose.yml` inclui um Redis local persistente. Em produção, use Redis gerenciado e `rediss://` quando o provedor exigir TLS. O Redis funciona como message broker; o Neon guarda apenas o estado, histórico e resultados dos jobs.
+
+Suba processos separados com `bun run worker:plans`, `bun run worker:materials`, `bun run worker:simulations` e `bun run worker:rag`. Eles consomem filas BullMQ e não fazem polling contínuo no Neon.
+Os workers usam logs compactos e coloridos no terminal com `LOG_PRETTY=true`. Em produção, prefira `LOG_PRETTY=false` para emitir JSON estruturado; use `LOG_LEVEL=debug` para mais detalhe.
 
 ## RAG de questões
 

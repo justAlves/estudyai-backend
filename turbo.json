@@ -1,0 +1,29 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "dev": {
+      "with": [
+        "worker:plans",
+        "worker:materials",
+        "worker:simulations"
+      ]
+    },
+    "worker:plans": {
+      "cache": false,
+      "persistent": true
+    },
+    "worker:materials": {
+      "cache": false,
+      "persistent": true
+    },
+    "worker:simulations": {
+      "cache": false,
+      "persistent": true
+    },
+    "worker:rag": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

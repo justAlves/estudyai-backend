@@ -11,6 +11,7 @@ import { studyTasks } from "../../../database/tables/study-tasks.table";
 import { users } from "../../../database/tables/users.table";
 import { accessControl, userIdFrom } from "../../../plugins/access-control";
 import { activityScore } from "../services/material.service";
+import { enqueueMaterialGeneration } from "../../../queues";
 import { adaptPlan } from "../services/adaptive-plan.service";
 import { studyAssessments } from "../../../database/tables/study-assessments.table";
 import { nextAvailableStudyDay } from "../services/task-scheduling.service";
@@ -36,6 +37,8 @@ export const studyController = new Elysia({ prefix: "/study-tasks", tags: ["Stud
       set: { status: "QUEUED", attemptCount: 0, nextAttemptAt: null, updatedAt: new Date() },
       where: eq(materialGenerationJobs.status, "FAILED"),
     });
+    const [job] = await db.select({ id: materialGenerationJobs.id }).from(materialGenerationJobs).where(eq(materialGenerationJobs.taskId, params.taskId)).limit(1);
+    if (job) await enqueueMaterialGeneration(job.id);
     set.status = 202;
     return { status: "QUEUED" };
   }, { auth: true, detail: { summary: "Solicita o material de uma tarefa" } })

@@ -7,10 +7,12 @@
       NODE_ENV: production
       PORT: 3333
       DATABASE_URL: ${DATABASE_URL:?}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
       JWT_SECRET: ${JWT_SECRET:?}
       CORS_ORIGIN: ${CORS_ORIGIN:?}
       APP_URL: ${APP_URL:?}
       LOG_LEVEL: ${LOG_LEVEL:-info}
+      LOG_PRETTY: ${LOG_PRETTY:-true}
       OTEL_SERVICE_NAME: estudeai-api
       GEMINI_API_KEY: ${GEMINI_API_KEY:?}
       GEMINI_GENERATION_MODEL: ${GEMINI_GENERATION_MODEL:-gemini-3.6-flash}
@@ -40,3 +42,17 @@
     worker-materials:
       <<: *estudeai
       command: ["bun", "run", "worker:materials"]
+
+    worker-simulations:
+      <<: *estudeai
+      command: ["bun", "run", "worker:simulations"]
+
+    redis:
+      image: redis:7-alpine
+      restart: unless-stopped
+      command: ["redis-server", "--appendonly", "yes"]
+      volumes:
+        - redis-data:/data
+
+  volumes:
+    redis-data:
