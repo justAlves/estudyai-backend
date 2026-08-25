@@ -2,7 +2,7 @@ FROM oven/bun:1.4.0-alpine
 
 WORKDIR /app
 COPY package.json bun.lock ./
-RUN bun install --frozen-lockfile --production
+RUN rm -f bun.lock && bun install --production
 RUN apk add --no-cache poppler-utils
 
 COPY src ./src
