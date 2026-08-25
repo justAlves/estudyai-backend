@@ -3,8 +3,9 @@ import { ulid } from "ulid";
 import { env } from "../../../config/env";
 import { db } from "../../../database";
 import { ragSyllabusChunks } from "../../../database/tables/rag-syllabus-chunks.table";
-import { contestKey } from "./contest-subjects.service";
-import { noticeContentForSubjectExtraction, noticeSubjectSections } from "./notice-subjects.service";
+import { contestKey, uniqueSubjects } from "./contest-subjects.service";
+import { noticeContentForSubjectExtraction, noticeSubjectSections, subjectsFromNoticeHeadings } from "./notice-subjects.service";
+import { eq } from "drizzle-orm";
 
 const embeddingModel = "gemini-embedding-2";
 const maxChunkLength = 7_000;
@@ -35,9 +36,18 @@ async function embed(inputs: string[]) {
 
 export function noticeRagChunks(contestName: string, text: string, subjects: string[]) {
   const focused = noticeContentForSubjectExtraction(text);
-  const sections = noticeSubjectSections(focused, subjects);
-  const source = sections.length ? sections : subjects.slice(0, 1).map((subject) => ({ subject, content: focused }));
-  return source.flatMap(({ subject, content }) => splitContent(content).map((chunk) => ({ contestName, normalizedContestName: contestKey(contestName), subject, content: chunk })));
+  // A lista da IA pode vir truncada. Os títulos do próprio edital completam
+  // essa lista para que uma matéria nunca receba o documento inteiro como
+  // fallback.
+  const allSubjects = uniqueSubjects(subjects, subjectsFromNoticeHeadings(focused));
+  const sections = noticeSubjectSections(focused, allSubjects);
+  const grouped = new Map<string, { subject: string; content: string }>();
+  for (const section of sections) {
+    const key = contestKey(section.subject);
+    const previous = grouped.get(key);
+    grouped.set(key, { subject: previous?.subject ?? section.subject, content: previous ? `${previous.content}\n\n${section.content}` : section.content });
+  }
+  return [...grouped.values()].flatMap(({ subject, content }) => splitContent(content).map((chunk) => ({ contestName, normalizedContestName: contestKey(contestName), subject, content: chunk })));
 }
 
 export async function indexNoticeInGlobalRag(contestName: string, text: string, subjects: string[]) {
@@ -56,6 +66,11 @@ export async function indexNoticeInGlobalRag(contestName: string, text: string, 
     embedding: embeddings[index],
     embeddingModel,
   }));
-  const inserted = await db.insert(ragSyllabusChunks).values(rows).onConflictDoNothing().returning({ id: ragSyllabusChunks.id });
-  return { indexed: inserted.length, skipped: rows.length - inserted.length };
+  const inserted = await db.transaction(async (tx) => {
+    // Um novo edital substitui a versão anterior; caso contrário, os chunks
+    // antigos (por exemplo, somente Português) continuam aparecendo no RAG.
+    await tx.delete(ragSyllabusChunks).where(eq(ragSyllabusChunks.normalizedContestName, contestKey(contestName)));
+    return tx.insert(ragSyllabusChunks).values(rows).onConflictDoNothing().returning({ id: ragSyllabusChunks.id });
+  });
+  return { indexed: inserted.length, skipped: 0 };
 }

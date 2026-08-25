@@ -16,6 +16,19 @@ function normalizedHeading(value: string) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").trim();
 }
 
+function noticeHeadingMatches(text: string) {
+  const matches = [
+    ...text.matchAll(/^\s*([A-ZÁÉÍÓÚÂÊÔÃÕÇÜ0-9][A-ZÁÉÍÓÚÂÊÔÃÕÇÜ0-9 /().,&'’\-]{1,119}):/gm),
+    // Alguns editais, como o da PMDF, omitem os dois-pontos em títulos cujo
+    // conteúdo começa imediatamente pelo item 1.
+    ...text.matchAll(/^\s*([A-ZÁÉÍÓÚÂÊÔÃÕÇÜ][A-ZÁÉÍÓÚÂÊÔÃÕÇÜ /().,&'’\-]{2,119})\s+1(?=\s)/gm),
+  ];
+  return matches
+    .map((match) => ({ subject: match[1].replace(/\s+/g, " ").trim(), start: match.index ?? 0 }))
+    .sort((left, right) => left.start - right.start)
+    .filter((match, index, all) => index === 0 || match.start !== all[index - 1].start);
+}
+
 /**
  * Editais normalmente colocam o conteúdo programático no fim do arquivo.
  * Mantemos o texto completo para materiais, mas focamos essa seção para a
@@ -35,8 +48,8 @@ export function noticeContentForSubjectExtraction(text: string) {
 
 /** Fallback para editais em que a IA está indisponível ou não responde. */
 export function subjectsFromNoticeHeadings(text: string) {
-  const headings = [...text.matchAll(/^\s*([A-ZÁÉÍÓÚÂÊÔÃÕÇÜ0-9][A-ZÁÉÍÓÚÂÊÔÃÕÇÜ0-9 /().,&'’\-]{1,119}):/gm)]
-    .map((match) => match[1].replace(/\s+/g, " ").trim())
+  const headings = noticeHeadingMatches(text)
+    .map(({ subject }) => subject)
     .filter((heading) => {
       const normalized = normalizedHeading(heading);
       return heading.length >= 3 && !genericNoticeHeadings.has(normalized) && !/^(ANEXO|CARGO|CONHECIMENTOS|MODULO|PERFIL)\b/.test(normalized);
@@ -47,11 +60,10 @@ export function subjectsFromNoticeHeadings(text: string) {
 }
 
 export function noticeSubjectSections(text: string, subjects: string[]) {
-  const headings = [...text.matchAll(/^\s*([A-ZÁÉÍÓÚÂÊÔÃÕÇÜ0-9][A-ZÁÉÍÓÚÂÊÔÃÕÇÜ0-9 /().,&'’\-]{1,119}):/gm)]
+  const headings = noticeHeadingMatches(text)
     .map((match, index, all) => ({
-      subject: match[1].replace(/\s+/g, " ").trim(),
-      start: match.index ?? 0,
-      end: all[index + 1]?.index ?? text.length,
+      ...match,
+      end: all[index + 1]?.start ?? text.length,
     }))
     .filter(({ subject }) => subjects.some((candidate) => normalizedHeading(candidate) === normalizedHeading(subject)));
   return headings.map(({ subject, start, end }) => ({ subject, content: text.slice(start, end).trim() })).filter(({ content }) => content.length > 80);
@@ -77,7 +89,10 @@ export async function extractNoticeSubjects(name: string, text: string) {
   try {
     const body = await response.json() as { candidates?: { content?: { parts?: { text?: string }[] } }[] };
     const parsed = parseNoticeSubjects(body.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("") ?? "");
-    return parsed.length ? parsed : fallback;
+    // A resposta da IA pode ser válida, mas incompleta quando o edital é
+    // grande. Os títulos determinísticos são a fonte de verdade sempre que
+    // encontrarem mais matérias no trecho programático.
+    return fallback.length > parsed.length ? fallback : parsed.length ? parsed : fallback;
   } catch {
     return fallback;
   }

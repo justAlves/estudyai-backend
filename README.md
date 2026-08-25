@@ -18,18 +18,19 @@ Open http://localhost:3000/ with your browser to see the result.
 
 Configure `EVOLUTION_GO_URL`, `EVOLUTION_GO_API_KEY` e `EVOLUTION_INSTANCE_NAME`. O serviço envia texto para `POST /message/sendText/{instância}` com o número em formato E.164, sem `+`.
 
-## Abacate Pay
+## Mercado Pago
 
-Crie na Abacate Pay um produto Pro de `R$ 59,90` (`price: 5990`) com ciclo `MONTHLY`, depois configure:
+Crie uma aplicação no Mercado Pago e configure:
 
 ```env
 APP_URL=https://app.estudeai.com
-ABACATEPAY_API_KEY=...
-ABACATEPAY_PRO_PRODUCT_ID=prod_...
-ABACATEPAY_WEBHOOK_SECRET=...
+MERCADOPAGO_ACCESS_TOKEN=APP_USR-...
+MERCADOPAGO_WEBHOOK_SECRET=...
+MERCADOPAGO_NOTIFICATION_URL=https://api.estudeai.com/billing/webhooks/mercadopago
+MERCADOPAGO_PRO_PRICE_CENTS=5990
 ```
 
-Cadastre o webhook HTTPS `https://api.estudeai.com/billing/webhooks/abacatepay?webhookSecret=...` para os eventos `subscription.completed`, `subscription.renewed`, `subscription.trial_started` e `subscription.cancelled`.
+O checkout cria uma assinatura mensal pendente e envia o estudante para o Mercado Pago escolher o meio de pagamento. Configure essa URL para os tópicos `subscription_preapproval` e `subscription_authorized_payment`; ela deve apontar diretamente para a API, não para o proxy do frontend.
 
 ## Editais enviados pelos usuários
 

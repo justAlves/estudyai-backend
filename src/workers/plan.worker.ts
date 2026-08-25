@@ -10,6 +10,8 @@ import { contestNoticeDocuments } from "../database/tables/contest-notice-docume
 import { users } from "../database/tables/users.table";
 import { knownSubjectsForContest, uniqueSubjects } from "../modules/onboarding/services/known-contests.service";
 import { syllabusSubjectsForContest } from "../modules/onboarding/services/contest-syllabus.service";
+import { noticeContentForSubjectExtraction, subjectsFromNoticeHeadings } from "../modules/onboarding/services/notice-subjects.service";
+import { indexNoticeInGlobalRag } from "../modules/onboarding/services/notice-rag.service";
 import { planReadyMessage, whatsAppService } from "../modules/notifications/services/whatsapp.service";
 import { workerLogger } from "../config/logger";
 import { createWorker, enqueuePlanGeneration, queueNames } from "../queues";
@@ -31,8 +33,8 @@ export function initialTasks(subjects: string[], minutes: number, from = new Dat
       const scheduledFor = date.toISOString().slice(0, 10);
       const studyMinutes = Math.ceil(minutes * 0.6);
       const practiceMinutes = minutes - studyMinutes;
-      tasks.push({ subject, type: "STUDY", title: `Estudar ${subject}`, estimatedMinutes: studyMinutes, scheduledFor });
-      tasks.push({ subject, type: studyDay < 5 ? "QUESTIONS" : "REVIEW", title: studyDay < 5 ? `Resolver questões de ${subject}` : `Revisar ${subject}`, estimatedMinutes: practiceMinutes, scheduledFor });
+      tasks.push({ subject, type: "STUDY", title: `Teoria e exemplos · ${subject}`, estimatedMinutes: studyMinutes, scheduledFor });
+      tasks.push({ subject, type: studyDay < 5 ? "QUESTIONS" : "REVIEW", title: studyDay < 5 ? `Prática · ${subject}` : `Revisão espaçada · ${subject}`, estimatedMinutes: practiceMinutes, scheduledFor });
       studyDay += 1;
     }
     date.setDate(date.getDate() + 1);
@@ -53,12 +55,31 @@ export async function processPlanJob(jobId: string, attempt = 0) {
     const [contest] = await db.select().from(contests).where(eq(contests.id, job.contestId)).limit(1);
     if (!contest) throw new Error("Plano não encontrado");
     const selectedSubjects = await db.select().from(contestSupportSubjects).where(eq(contestSupportSubjects.contestId, contest.id));
-    const [notice] = await db.select({ subjects: contestNoticeDocuments.subjects }).from(contestNoticeDocuments).where(eq(contestNoticeDocuments.contestId, contest.id)).limit(1);
-    const subjects = uniqueSubjects(selectedSubjects.map(({ name }) => name), notice?.subjects ?? [], await syllabusSubjectsForContest(contest.name), await knownSubjectsForContest(contest.name));
+    const [notice] = await db.select({ subjects: contestNoticeDocuments.subjects, extractedText: contestNoticeDocuments.extractedText }).from(contestNoticeDocuments).where(eq(contestNoticeDocuments.contestId, contest.id)).limit(1);
+    const detectedNoticeSubjects = notice?.extractedText ? subjectsFromNoticeHeadings(noticeContentForSubjectExtraction(notice.extractedText)) : [];
+    const noticeSubjects = uniqueSubjects(notice?.subjects ?? [], detectedNoticeSubjects);
+    // As matérias de reforço influenciam a adaptação, mas não devem ocupar o
+    // começo inteiro do plano. O edital/base do concurso define a ordem geral;
+    // as escolhidas pelo estudante entram em seguida.
+    const subjects = uniqueSubjects(noticeSubjects, await syllabusSubjectsForContest(contest.name), await knownSubjectsForContest(contest.name), selectedSubjects.map(({ name }) => name));
     if (!subjects.length) throw new Error("Plano sem matérias");
 
-    await db.insert(studyTasks).values(initialTasks(subjects, contest.dailyStudyMinutes).map((task) => ({ id: ulid(), contestId: contest.id, ...task })));
-    await db.update(planGenerationJobs).set({ status: "COMPLETED" }).where(eq(planGenerationJobs.id, job.id));
+    if (notice?.extractedText && detectedNoticeSubjects.length > (notice.subjects?.length ?? 0)) {
+      try {
+        await indexNoticeInGlobalRag(contest.name, notice.extractedText, noticeSubjects);
+      } catch (error) {
+        logger.warn({ err: error, contestId: contest.id }, "não foi possível atualizar o RAG do edital legado");
+      }
+    }
+
+    await db.transaction(async (tx) => {
+      if (notice && detectedNoticeSubjects.length > notice.subjects.length) {
+        await tx.update(contestNoticeDocuments).set({ subjects: noticeSubjects }).where(eq(contestNoticeDocuments.contestId, contest.id));
+      }
+      await tx.delete(studyTasks).where(eq(studyTasks.contestId, contest.id));
+      await tx.insert(studyTasks).values(initialTasks(subjects, contest.dailyStudyMinutes).map((task) => ({ id: ulid(), contestId: contest.id, ...task })));
+      await tx.update(planGenerationJobs).set({ status: "COMPLETED" }).where(eq(planGenerationJobs.id, job.id));
+    });
 
     const [user] = await db.select({ phone: users.phone, socialName: users.socialName, name: users.name }).from(users).where(eq(users.id, contest.userId)).limit(1);
     if (user && whatsAppService.isConfigured) await whatsAppService.sendText(user.phone, planReadyMessage(user.socialName ?? user.name, contest.name));

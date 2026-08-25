@@ -70,7 +70,9 @@ export const onboardingController = new Elysia({ prefix: "/onboarding", tags: ["
     const [contest] = await db.select({ id: contests.id, name: contests.name, examDate: contests.examDate, dailyStudyMinutes: contests.dailyStudyMinutes }).from(contests).where(and(eq(contests.userId, userId), eq(contests.isActive, true))).limit(1);
     if (!contest) return null;
     const [job] = await db.select({ status: planGenerationJobs.status }).from(planGenerationJobs).where(eq(planGenerationJobs.contestId, contest.id)).limit(1);
-    const tasks = await db.select({ id: studyTasks.id, subject: studyTasks.subject, title: studyTasks.title, type: studyTasks.type, estimatedMinutes: studyTasks.estimatedMinutes, status: studyTasks.status, scheduledFor: studyTasks.scheduledFor }).from(studyTasks).where(eq(studyTasks.contestId, contest.id)).orderBy(asc(studyTasks.scheduledFor));
+    const tasks = job?.status === "COMPLETED"
+      ? await db.select({ id: studyTasks.id, subject: studyTasks.subject, title: studyTasks.title, type: studyTasks.type, estimatedMinutes: studyTasks.estimatedMinutes, status: studyTasks.status, scheduledFor: studyTasks.scheduledFor }).from(studyTasks).where(eq(studyTasks.contestId, contest.id)).orderBy(asc(studyTasks.scheduledFor))
+      : [];
     return { name: contest.name, examDate: contest.examDate, dailyStudyMinutes: contest.dailyStudyMinutes, status: job?.status ?? "QUEUED", tasks };
   })
   .post(
@@ -183,9 +185,9 @@ export const onboardingController = new Elysia({ prefix: "/onboarding", tags: ["
     } catch (error) {
       console.warn({ err: error, contestName }, "não foi possível indexar o edital no RAG global");
     }
+    await db.delete(studyTasks).where(eq(studyTasks.contestId, contest.id));
     const [planJob] = await db.update(planGenerationJobs).set({ status: "QUEUED" }).where(eq(planGenerationJobs.contestId, contest.id)).returning({ id: planGenerationJobs.id });
     if (planJob) await enqueuePlanGeneration(planJob.id);
-    await db.delete(studyTasks).where(eq(studyTasks.contestId, contest.id));
     set.status = 202;
     return { status: "RECEIVED", message: "Seu edital foi recebido e será usado para preparar seu plano." };
   }, { parse: "none" })

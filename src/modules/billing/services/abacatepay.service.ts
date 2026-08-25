@@ -4,6 +4,10 @@ type AbacateResponse<T> = { data: T; success: boolean; error: string | null };
 
 export class BillingError extends Error {}
 
+function paymentMethodUnavailable(error: unknown, method: "CARD" | "PIX") {
+  return error instanceof BillingError && new RegExp(`${method}.*not available for this store`, "i").test(error.message);
+}
+
 async function post<T>(path: string, body: unknown): Promise<T> {
   if (!env.ABACATEPAY_API_KEY) throw new BillingError("Abacate Pay não está configurada.");
 
@@ -26,7 +30,7 @@ export async function createProCheckout(input: { userId: string; email: string; 
     externalId: input.externalId,
     completionUrl: `${env.APP_URL}/dashboard?payment=success`,
     returnUrl: `${env.APP_URL}/dashboard?payment=cancelled`,
-    methods: ["CARD"],
+    methods: ["PIX"],
   });
 }
 
