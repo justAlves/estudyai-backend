@@ -120,6 +120,13 @@
       "when": 1787629479861,
       "tag": "0016_common_karnak",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1787716625529,
+      "tag": "0017_overjoyed_captain_cross",
+      "breakpoints": true
     }
   ]
 }

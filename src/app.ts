@@ -9,6 +9,7 @@ import { billingController } from "./modules/billing/controllers/billing.control
 import { ragController } from "./modules/rag/controllers/rag.controller";
 import { studyController } from "./modules/study/controllers/study.controller";
 import { simulationsController } from "./modules/simulations/controllers/simulations.controller";
+import { launchController } from "./modules/launch/controllers/launch.controller";
 
 export const app = new Elysia()
   .use(cors({ origin: env.CORS_ORIGIN }))
@@ -26,4 +27,5 @@ export const app = new Elysia()
   .use(ragController)
   .use(studyController)
   .use(simulationsController)
+  .use(launchController)
   .get("/", () => "Hello Elysia");

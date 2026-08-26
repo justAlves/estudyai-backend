@@ -19,3 +19,4 @@ export * from "./tables/simulations.table";
 export * from "./tables/simulation-questions.table";
 export * from "./tables/simulation-answers.table";
 export * from "./tables/simulation-generation-jobs.table";
+export * from "./tables/launch-leads.table";
