@@ -17,8 +17,9 @@ export function sourceList(questions: RagQuestion[]) {
 }
 
 export function generationModels(model: string) {
-  const fallback = model === "gemini-2.5-flash" ? "gemini-3.6-flash" : "gemini-2.5-flash";
-  return [model, fallback];
+  const primary = model === "gemini-2.5-flash" ? "gemini-3.6-flash" : model;
+  const fallback = primary === "gemini-3.6-flash" ? "gemini-3.5-flash" : "gemini-3.6-flash";
+  return [primary, fallback];
 }
 
 export function parseActivities(content: string): StudyActivity[] {
