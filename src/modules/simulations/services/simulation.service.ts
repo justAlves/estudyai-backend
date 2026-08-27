@@ -190,7 +190,7 @@ ${reference}`;
   const generate = (model: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey }, body });
   const models = generationModels(env.GEMINI_GENERATION_MODEL);
   let response = await generate(models[0]);
-  if (response.status === 404 && models[1]) response = await generate(models[1]);
+  if ((response.status === 404 || response.status === 429 || response.status >= 500) && models[1]) response = await generate(models[1]);
   if (!response.ok) {
     const responseBody = await response.text();
     const retryAfterSeconds = Number(responseBody.match(/"retryDelay"\s*:\s*"(\d+)s"/)?.[1]);

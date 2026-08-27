@@ -1,4 +1,3 @@
-import { createHmac, timingSafeEqual } from "node:crypto";
 import { Elysia } from "elysia";
 import { and, desc, eq, or } from "drizzle-orm";
 import { ulid } from "ulid";
@@ -8,23 +7,11 @@ import { subscriptions } from "../../../database/tables/subscriptions.table";
 import { users } from "../../../database/tables/users.table";
 import { webhookEvents } from "../../../database/tables/webhook-events.table";
 import { accessControl, userIdFrom } from "../../../plugins/access-control";
-import { MercadoPagoError, cancelProSubscription, createProCheckout, getSubscription } from "../services/mercadopago.service";
-
-type MercadoPagoWebhook = { id?: number | string; type?: string; action?: string; data?: { id?: string | number } };
-
-function validMercadoPagoSignature(signature: string | null, requestId: string | null, dataId: string | undefined) {
-  if (!signature || !requestId || !dataId || !env.MERCADOPAGO_WEBHOOK_SECRET) return false;
-  const parts = Object.fromEntries(signature.split(",").map((part) => part.trim().split("=", 2) as [string, string]));
-  const manifest = `id:${dataId};request-id:${requestId};ts:${parts.ts};`;
-  const expected = createHmac("sha256", env.MERCADOPAGO_WEBHOOK_SECRET).update(manifest).digest("hex");
-  const actual = Buffer.from(parts.v1 ?? "");
-  const expectedBuffer = Buffer.from(expected);
-  return actual.length === expectedBuffer.length && timingSafeEqual(actual, expectedBuffer);
-}
+import { StripeBillingError, cancelProSubscription, constructStripeEvent, createProCheckout } from "../services/stripe.service";
 
 function subscriptionState(status: string) {
-  if (status === "authorized") return "ACTIVE" as const;
-  if (["cancelled", "canceled", "paused"].includes(status)) return "CANCELLED" as const;
+  if (["active", "trialing"].includes(status.toLowerCase())) return "ACTIVE" as const;
+  if (["canceled", "unpaid", "incomplete_expired"].includes(status.toLowerCase())) return "CANCELLED" as const;
   return "PENDING" as const;
 }
 
@@ -50,13 +37,12 @@ export const billingController = new Elysia({ prefix: "/billing", tags: ["Billin
 
     try {
       const id = ulid();
-      if (!env.MERCADOPAGO_NOTIFICATION_URL) throw new MercadoPagoError("Configure MERCADOPAGO_NOTIFICATION_URL com a URL pública da API.");
-      const checkout = await createProCheckout({ email: user.email, externalId: id, backUrl: `${env.APP_URL}/dashboard?payment=returned`, notificationUrl: env.MERCADOPAGO_NOTIFICATION_URL });
-      await db.insert(subscriptions).values({ id, userId, providerCheckoutId: checkout.id, providerSubscriptionId: checkout.id, status: subscriptionState(checkout.status) });
-      return { url: checkout.init_point };
+      const checkout = await createProCheckout({ email: user.email, externalId: id, backUrl: `${env.APP_URL}/dashboard?payment=returned` });
+      await db.insert(subscriptions).values({ id, userId, providerCheckoutId: checkout.id, status: "PENDING" });
+      return { url: checkout.url };
     } catch (error) {
       set.status = 503;
-      return { message: error instanceof MercadoPagoError ? error.message : "Não foi possível iniciar o pagamento." };
+      return { message: error instanceof StripeBillingError ? error.message : "Não foi possível iniciar o pagamento." };
     }
   }, { auth: true })
   .post("/cancel", async ({ headers, jwt, set }) => {
@@ -76,29 +62,43 @@ export const billingController = new Elysia({ prefix: "/billing", tags: ["Billin
       return { cancelled: true };
     } catch (error) {
       set.status = 503;
-      return { message: error instanceof MercadoPagoError ? error.message : "Não foi possível cancelar a assinatura." };
+      return { message: error instanceof StripeBillingError ? error.message : "Não foi possível cancelar a assinatura." };
     }
   }, { premium: true })
-  .post("/webhooks/mercadopago", async ({ request, set }) => {
-    const event = await request.json() as MercadoPagoWebhook;
-    const dataId = event.data?.id === undefined ? undefined : String(event.data.id);
-    if (!event.id || event.type !== "subscription_preapproval" || !dataId || !validMercadoPagoSignature(request.headers.get("x-signature"), request.headers.get("x-request-id"), dataId)) {
-      set.status = 401;
-      return { message: "Webhook inválido" };
+  .post("/webhooks/stripe", async ({ request, set }) => {
+    let event;
+    try {
+      event = await constructStripeEvent(await request.text(), request.headers.get("stripe-signature"));
+    } catch (error) {
+      set.status = 400;
+      return { message: error instanceof StripeBillingError ? error.message : "Webhook inválido" };
     }
 
-    const subscription = await getSubscription(dataId);
-    const [eventLog] = await db.insert(webhookEvents).values([{ id: String(event.id) }]).onConflictDoNothing().returning();
+    const object = event.data.object as Record<string, unknown>;
+    const metadata = (object.metadata as Record<string, string> | null) ?? {};
+    const providerCheckoutId = event.type.startsWith("checkout.session.") ? String(object.id) : undefined;
+    const providerSubscriptionId = typeof object.subscription === "string" ? object.subscription : event.type.startsWith("customer.subscription.") ? String(object.id) : undefined;
+    const externalReference = (typeof object.client_reference_id === "string" ? object.client_reference_id : undefined) ?? metadata.subscription_id;
+
+    let state: ReturnType<typeof subscriptionState> | undefined;
+    if (["checkout.session.completed", "checkout.session.async_payment_succeeded", "invoice.paid"].includes(event.type)) state = "ACTIVE";
+    if (event.type === "invoice.payment_failed") state = "PENDING";
+    if (event.type.startsWith("customer.subscription.")) state = subscriptionState(typeof object.status === "string" ? object.status : "incomplete");
+    if (event.type === "customer.subscription.deleted") state = "CANCELLED";
+    if (!state) return { received: true, ignored: true };
+
+    const [localSubscription] = await db.select().from(subscriptions).where(or(
+      providerCheckoutId ? eq(subscriptions.providerCheckoutId, providerCheckoutId) : undefined,
+      providerSubscriptionId ? eq(subscriptions.providerSubscriptionId, providerSubscriptionId) : undefined,
+      externalReference ? eq(subscriptions.id, externalReference) : undefined,
+    )).limit(1);
+    if (!localSubscription) return { received: true, ignored: true };
+
+    const [eventLog] = await db.insert(webhookEvents).values([{ id: event.id }]).onConflictDoNothing().returning();
     if (!eventLog) return { received: true, duplicate: true };
 
-    const [localSubscription] = await db.select().from(subscriptions).where(or(eq(subscriptions.providerSubscriptionId, dataId), eq(subscriptions.providerCheckoutId, dataId))).limit(1);
-    if (!localSubscription) {
-      set.status = 404;
-      return { message: "Assinatura desconhecida" };
-    }
-    const state = subscriptionState(subscription.status);
     await db.transaction(async (tx) => {
-      await tx.update(subscriptions).set({ providerSubscriptionId: dataId, status: state }).where(eq(subscriptions.id, localSubscription.id));
+      await tx.update(subscriptions).set({ providerSubscriptionId: providerSubscriptionId ?? localSubscription.providerSubscriptionId, status: state }).where(eq(subscriptions.id, localSubscription.id));
       await tx.update(users).set({ premium: state === "ACTIVE" }).where(eq(users.id, localSubscription.userId));
     });
     return { received: true };

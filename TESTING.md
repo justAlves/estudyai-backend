@@ -6,7 +6,7 @@
 bun run test
 ```
 
-Essa suíte não deve chamar AbacatePay, WhatsApp, Gemini nem alterar o banco. Ela cobre validações, autenticação de requisições, regras de assinatura, adaptação/agendamento e workers puros.
+Essa suíte não deve chamar Stripe, WhatsApp, Gemini nem alterar o banco. Ela cobre validações, autenticação de requisições, regras de assinatura, adaptação/agendamento e workers puros.
 
 As cotas atualmente contratadas também estão cobertas por testes puros: gratuito tem 2 simulados e 1 redação por mês; Pro tem 20 simulados e 8 redações. A aplicação dessas cotas nos endpoints de simulados/redações será feita quando esses módulos forem implementados.
 

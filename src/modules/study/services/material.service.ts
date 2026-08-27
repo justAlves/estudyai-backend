@@ -17,7 +17,8 @@ export function sourceList(questions: RagQuestion[]) {
 }
 
 export function generationModels(model: string) {
-  return model === "gemini-2.5-flash" ? [model, "gemini-3.6-flash"] : [model];
+  const fallback = model === "gemini-2.5-flash" ? "gemini-3.6-flash" : "gemini-2.5-flash";
+  return [model, fallback];
 }
 
 export function parseActivities(content: string): StudyActivity[] {
@@ -62,7 +63,7 @@ QUESTÕES DE CONTEXTO:\n${context}`;
   });
   const models = generationModels(env.GEMINI_GENERATION_MODEL);
   let response = await generate(models[0]);
-  if (response.status === 404 && models[1]) response = await generate(models[1]);
+  if ((response.status === 404 || response.status === 429 || response.status >= 500) && models[1]) response = await generate(models[1]);
   if (!response.ok) {
     const responseBody = await response.text();
     const retryAfterSeconds = Number(responseBody.match(/"retryDelay"\s*:\s*"(\d+)s"/)?.[1]);
@@ -84,7 +85,7 @@ export async function generateActivities(subject: string, questions: RagQuestion
   const generate = (model: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
   const models = generationModels(env.GEMINI_GENERATION_MODEL);
   let response = await generate(models[0]);
-  if (response.status === 404 && models[1]) response = await generate(models[1]);
+  if ((response.status === 404 || response.status === 429 || response.status >= 500) && models[1]) response = await generate(models[1]);
   if (!response.ok) throw new GeminiGenerationError(`Gemini geração falhou (${response.status}): ${await response.text()}`, response.status === 429 || response.status >= 500);
   const body = (await response.json()) as { candidates?: { content?: { parts?: { text?: string }[] } }[] };
   return parseActivities(body.candidates?.[0]?.content?.parts?.map(({ text }) => text ?? "").join("").trim() ?? "");
