@@ -187,10 +187,27 @@ ${reference}`;
     },
     contents: [{ parts: [{ text: prompt }] }],
   });
-  const generate = (model: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey }, body });
+  const generate = async (model: string) => {
+    try {
+      return await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey }, body, signal: AbortSignal.timeout(120_000) });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "TimeoutError") {
+        throw new GeminiGenerationError(`Gemini geração do simulado excedeu o tempo limite usando ${model}.`, true, 30_000);
+      }
+      throw error;
+    }
+  };
   const models = generationModels(env.GEMINI_GENERATION_MODEL);
-  let response = await generate(models[0]);
-  if ((response.status === 404 || response.status === 429 || response.status >= 500) && models[1]) response = await generate(models[1]);
+  let response: Response;
+  let usedFallback = false;
+  try {
+    response = await generate(models[0]);
+  } catch (error) {
+    if (!(error instanceof GeminiGenerationError) || !error.retryable || !models[1]) throw error;
+    usedFallback = true;
+    response = await generate(models[1]);
+  }
+  if (!usedFallback && (response.status === 404 || response.status === 429 || response.status >= 500) && models[1]) response = await generate(models[1]);
   if (!response.ok) {
     const responseBody = await response.text();
     const retryAfterSeconds = Number(responseBody.match(/"retryDelay"\s*:\s*"(\d+)s"/)?.[1]);
