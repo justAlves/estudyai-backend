@@ -1,5 +1,5 @@
 import { env } from "../../../config/env";
-import { GeminiGenerationError, generationModels } from "../../study/services/material.service";
+import { GeminiGenerationError, simulationGenerationModels } from "../../study/services/material.service";
 import { searchQuestions } from "../../rag/services/rag.service";
 import { syllabusContext } from "../../onboarding/services/contest-syllabus.service";
 
@@ -197,17 +197,23 @@ ${reference}`;
       throw error;
     }
   };
-  const models = generationModels(env.GEMINI_GENERATION_MODEL);
-  let response: Response;
-  let usedFallback = false;
-  try {
-    response = await generate(models[0]);
-  } catch (error) {
-    if (!(error instanceof GeminiGenerationError) || !error.retryable || !models[1]) throw error;
-    usedFallback = true;
-    response = await generate(models[1]);
+  const models = simulationGenerationModels(env.GEMINI_GENERATION_MODEL);
+  let response: Response | undefined;
+  let lastError: unknown;
+  for (const model of models) {
+    try {
+      const candidate = await generate(model);
+      if (candidate.ok || ![404, 408, 409, 429].includes(candidate.status) && candidate.status < 500) { response = candidate; break; }
+      lastError = new GeminiGenerationError(`Gemini geração do simulado falhou (${candidate.status}) no modelo ${model}.`, candidate.status === 429 || candidate.status >= 500);
+    } catch (error) {
+      lastError = error;
+      if (!(error instanceof GeminiGenerationError) || !error.retryable) throw error;
+    }
   }
-  if (!usedFallback && (response.status === 404 || response.status === 429 || response.status >= 500) && models[1]) response = await generate(models[1]);
+  if (!response) {
+    if (lastError instanceof GeminiGenerationError) throw lastError;
+    throw new GeminiGenerationError(`Nenhum modelo Gemini conseguiu gerar o simulado: ${models.join(", ")}.`, true);
+  }
   if (!response.ok) {
     const responseBody = await response.text();
     const retryAfterSeconds = Number(responseBody.match(/"retryDelay"\s*:\s*"(\d+)s"/)?.[1]);

@@ -20,3 +20,5 @@ export * from "./tables/simulation-questions.table";
 export * from "./tables/simulation-answers.table";
 export * from "./tables/simulation-generation-jobs.table";
 export * from "./tables/launch-leads.table";
+export * from "./tables/essays.table";
+export * from "./tables/essay-generation-jobs.table";

@@ -7,6 +7,7 @@ export const queueNames = {
   materials: "estudyai-materials",
   rag: "estudyai-rag",
   simulations: "estudyai-simulations",
+  essays: "estudyai-essays",
 } as const;
 
 function connection() {
@@ -68,4 +69,8 @@ export function enqueueRagIngestion(jobId = ulid()) {
 
 export function enqueueSimulationGeneration(jobId: string) {
   return enqueue(queueNames.simulations, jobId, { attempts: 3, backoff: { type: "exponential", delay: 15_000 } });
+}
+
+export function enqueueEssayGeneration(jobId: string) {
+  return enqueue(queueNames.essays, jobId, { attempts: 3, backoff: { type: "exponential", delay: 15_000 } });
 }

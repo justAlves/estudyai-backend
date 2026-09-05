@@ -6,7 +6,10 @@ import { db } from "../../../database";
 import { subscriptions } from "../../../database/tables/subscriptions.table";
 import { users } from "../../../database/tables/users.table";
 import { webhookEvents } from "../../../database/tables/webhook-events.table";
+import { contests } from "../../../database/tables/contests.table";
+import { planGenerationJobs } from "../../../database/tables/plan-generation-jobs.table";
 import { accessControl, userIdFrom } from "../../../plugins/access-control";
+import { enqueuePlanGeneration } from "../../../queues";
 import { StripeBillingError, cancelProSubscription, constructStripeEvent, createProCheckout } from "../services/stripe.service";
 
 function subscriptionState(status: string) {
@@ -97,9 +100,17 @@ export const billingController = new Elysia({ prefix: "/billing", tags: ["Billin
     const [eventLog] = await db.insert(webhookEvents).values([{ id: event.id }]).onConflictDoNothing().returning();
     if (!eventLog) return { received: true, duplicate: true };
 
+    const becameActive = state === "ACTIVE" && localSubscription.status !== "ACTIVE";
     await db.transaction(async (tx) => {
       await tx.update(subscriptions).set({ providerSubscriptionId: providerSubscriptionId ?? localSubscription.providerSubscriptionId, status: state }).where(eq(subscriptions.id, localSubscription.id));
       await tx.update(users).set({ premium: state === "ACTIVE" }).where(eq(users.id, localSubscription.userId));
     });
+    if (becameActive) {
+      const activeContests = await db.select({ id: contests.id }).from(contests).where(and(eq(contests.userId, localSubscription.userId), eq(contests.isActive, true)));
+      for (const contest of activeContests) {
+        const [job] = await db.insert(planGenerationJobs).values({ id: ulid(), contestId: contest.id }).onConflictDoUpdate({ target: planGenerationJobs.contestId, set: { status: "QUEUED", updatedAt: new Date() } }).returning({ id: planGenerationJobs.id });
+        if (job) await enqueuePlanGeneration(job.id);
+      }
+    }
     return { received: true };
   }, { parse: "none" });

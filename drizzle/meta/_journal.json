@@ -127,6 +127,13 @@
       "when": 1787716625529,
       "tag": "0017_overjoyed_captain_cross",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1788000000000,
+      "tag": "0018_essay_analysis",
+      "breakpoints": true
     }
   ]
 }

@@ -22,6 +22,12 @@ export function generationModels(model: string) {
   return [primary, fallback];
 }
 
+export function simulationGenerationModels(model: string) {
+  return [...new Set(["gemini-3.7-flash", ...generationModels(model), "gemini-3.5-flash-lite"])] as string[];
+}
+
+export const essayGenerationModels = simulationGenerationModels;
+
 export function parseActivities(content: string): StudyActivity[] {
   const parsed = JSON.parse(content.replace(/^```json\s*|\s*```$/g, "")) as StudyActivity[];
   if (!Array.isArray(parsed) || !parsed.every((item) => typeof item.question === "string" && item.options.length === 4 && Number.isInteger(item.answer) && item.answer >= 0 && item.answer < 4 && typeof item.explanation === "string")) throw new Error("Gemini retornou atividades inválidas.");

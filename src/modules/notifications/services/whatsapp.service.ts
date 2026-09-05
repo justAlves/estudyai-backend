@@ -16,6 +16,10 @@ export function materialReadyMessage(socialName: string | null, subject: string,
   return `🎯 *${studentName(socialName)},* ${opening}\n\nUm estudo de cada vez também é progresso.\n\n👉 Abrir aula: ${appUrl(`/m/${taskId}`)}`;
 }
 
+export function adaptivePlanMessage(socialName: string | null, subject: string, taskId: string) {
+  return `🧠 *${studentName(socialName)},* seu plano foi adaptado com base no seu desempenho.\n\nO próximo material de *${subject}* já está disponível.\n\n👉 Abrir material: ${appUrl(`/m/${taskId}`)}`;
+}
+
 export class WhatsAppService {
   get isConfigured() {
     return !!env.EVOLUTION_GO_URL && !!env.EVOLUTION_GO_API_KEY && !!env.EVOLUTION_INSTANCE_NAME;

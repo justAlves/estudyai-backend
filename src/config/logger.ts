@@ -24,3 +24,4 @@ const logger = pino({
 });
 
 export const workerLogger = (worker: string) => logger.child({ worker });
+export const apiLogger = logger.child({ worker: "api" });

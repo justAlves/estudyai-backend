@@ -10,8 +10,18 @@ import { ragController } from "./modules/rag/controllers/rag.controller";
 import { studyController } from "./modules/study/controllers/study.controller";
 import { simulationsController } from "./modules/simulations/controllers/simulations.controller";
 import { launchController } from "./modules/launch/controllers/launch.controller";
+import { essaysController } from "./modules/essays/controllers/essays.controller";
+import { apiLogger } from "./config/logger";
 
 export const app = new Elysia()
+  .onRequest(({ request }) => {
+    apiLogger.info({ method: request.method, path: new URL(request.url).pathname }, "requisição recebida");
+  })
+  .onError(({ code, error, request, set }) => {
+    apiLogger.error({ err: error, code, method: request.method, path: new URL(request.url).pathname, status: set.status }, "erro não tratado na API");
+    if (set.status === 200) set.status = 500;
+    return { message: "Erro interno do servidor.", requestId: request.headers.get("x-request-id") ?? undefined };
+  })
   .use(cors({ origin: env.CORS_ORIGIN }))
   .use(opentelemetry({ serviceName: env.OTEL_SERVICE_NAME }))
   .use(
@@ -28,4 +38,5 @@ export const app = new Elysia()
   .use(studyController)
   .use(simulationsController)
   .use(launchController)
+  .use(essaysController)
   .get("/", () => "Hello Elysia");

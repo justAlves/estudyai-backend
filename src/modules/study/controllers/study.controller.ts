@@ -15,6 +15,8 @@ import { enqueueMaterialGeneration } from "../../../queues";
 import { adaptPlan } from "../services/adaptive-plan.service";
 import { studyAssessments } from "../../../database/tables/study-assessments.table";
 import { nextAvailableStudyDay } from "../services/task-scheduling.service";
+import { env } from "../../../config/env";
+import { whatsAppService } from "../../notifications/services/whatsapp.service";
 
 async function ownedTask(taskId: string, userId: string) {
   const [task] = await db.select({ id: studyTasks.id, contestId: studyTasks.contestId, estimatedMinutes: studyTasks.estimatedMinutes, scheduledFor: studyTasks.scheduledFor, status: studyTasks.status, dailyStudyMinutes: contests.dailyStudyMinutes }).from(studyTasks).innerJoin(contests, eq(studyTasks.contestId, contests.id)).where(and(eq(studyTasks.id, taskId), eq(contests.userId, userId))).limit(1);
@@ -23,6 +25,18 @@ async function ownedTask(taskId: string, userId: string) {
 
 export const studyController = new Elysia({ prefix: "/study-tasks", tags: ["Study"] })
   .use(accessControl)
+  .post("/debug/adapt-plan", async ({ headers, jwt, set }) => {
+    if (!env.ENABLE_DEBUG_ENDPOINTS) { set.status = 404; return { message: "Endpoint não encontrado." }; }
+    const userId = await userIdFrom(headers.authorization, jwt.verify);
+    const [contest] = await db.select({ id: contests.id, premium: users.premium }).from(contests).innerJoin(users, eq(contests.userId, users.id)).where(and(eq(contests.userId, userId!), eq(contests.isActive, true))).limit(1);
+    if (!contest) { set.status = 404; return { message: "Concurso ativo não encontrado." }; }
+    if (!contest.premium) { set.status = 403; return { message: "Ative o plano Pro para testar o plano adaptativo." }; }
+    const [task] = await db.select({ subject: studyTasks.subject }).from(studyTasks).where(and(eq(studyTasks.contestId, contest.id), eq(studyTasks.status, "PENDING"))).limit(1);
+    if (!task) { set.status = 409; return { message: "Não há tarefas pendentes para adaptar." }; }
+    await db.insert(studyAssessments).values({ id: ulid(), contestId: contest.id, subject: task.subject, type: "ESSAY", score: 0, total: 10 });
+    const updatedTasks = await adaptPlan(contest.id);
+    return { status: "ADAPTED", evaluatedSubject: task.subject, updatedTasks, whatsappConfigured: whatsAppService.isConfigured };
+  }, { auth: true, detail: { summary: "[DEBUG] Força uma adaptação do plano com nota baixa" } })
   .post("/:taskId/material", async ({ params, headers, jwt, set }) => {
     const userId = await userIdFrom(headers.authorization, jwt.verify);
     if (!userId || !await ownedTask(params.taskId, userId)) {

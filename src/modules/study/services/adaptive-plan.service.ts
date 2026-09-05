@@ -6,6 +6,8 @@ import { studyAssessments } from "../../../database/tables/study-assessments.tab
 import { studyMaterials } from "../../../database/tables/study-materials.table";
 import { studyTasks } from "../../../database/tables/study-tasks.table";
 import { users } from "../../../database/tables/users.table";
+import { adaptivePlanMessage, whatsAppService } from "../../notifications/services/whatsapp.service";
+import { apiLogger } from "../../../config/logger";
 
 type Result = { subject: string; score: number; total: number };
 
@@ -24,11 +26,11 @@ export function weakSubjects(results: Result[]) {
 }
 
 export async function adaptPlan(contestId: string) {
-  const [contest] = await db.select({ premium: users.premium }).from(contests).innerJoin(users, eq(contests.userId, users.id)).where(eq(contests.id, contestId)).limit(1);
-  if (!contest?.premium) return;
+  const [contest] = await db.select({ premium: users.premium, phone: users.phone, socialName: users.socialName, name: users.name }).from(contests).innerJoin(users, eq(contests.userId, users.id)).where(eq(contests.id, contestId)).limit(1);
+  if (!contest?.premium) return [];
   const planRows = await db.select({ subject: studyTasks.subject }).from(studyTasks).where(eq(studyTasks.contestId, contestId));
   const planSubjects = [...new Set(planRows.map(({ subject }) => subject))];
-  if (!planSubjects.length) return;
+  if (!planSubjects.length) return [];
   const activities = await db.select({ subject: studyTasks.subject, score: studyActivityAttempts.score, activities: studyMaterials.activities }).from(studyActivityAttempts).innerJoin(studyTasks, eq(studyActivityAttempts.taskId, studyTasks.id)).innerJoin(studyMaterials, eq(studyMaterials.taskId, studyTasks.id)).where(eq(studyTasks.contestId, contestId));
   const assessments = await db.select({ subject: studyAssessments.subject, score: studyAssessments.score, total: studyAssessments.total }).from(studyAssessments).where(eq(studyAssessments.contestId, contestId));
   const results = adaptiveResultsWithinPlan(
@@ -36,11 +38,17 @@ export async function adaptPlan(contestId: string) {
     [...activities.map(({ subject, score, activities }) => ({ subject, score, total: activities.length })), ...assessments],
   );
   const subjects = weakSubjects(results);
-  if (!subjects.length) return;
+  if (!subjects.length) return [];
   const pending = await db.select({ id: studyTasks.id, type: studyTasks.type }).from(studyTasks).leftJoin(studyMaterials, eq(studyMaterials.taskId, studyTasks.id)).where(and(eq(studyTasks.contestId, contestId), eq(studyTasks.status, "PENDING"), gte(studyTasks.scheduledFor, new Date().toISOString().slice(0, 10)), isNull(studyMaterials.id))).limit(6);
   await Promise.all(pending.map((task, index) => {
     const subject = subjects[index % subjects.length];
     const title = task.type === "QUESTIONS" ? `Resolver questões de ${subject}` : task.type === "REVIEW" ? `Revisar ${subject}` : `Estudar ${subject}`;
     return db.update(studyTasks).set({ subject, title }).where(eq(studyTasks.id, task.id));
   }));
+  const next = pending[0];
+  if (next && whatsAppService.isConfigured) {
+    try { await whatsAppService.sendText(contest.phone, adaptivePlanMessage(contest.socialName ?? contest.name, subjects[0], next.id)); }
+    catch (error) { apiLogger.warn({ err: error, contestId, taskId: next.id }, "não foi possível enviar notificação do plano adaptativo"); }
+  }
+  return pending.map((task, index) => ({ id: task.id, subject: subjects[index % subjects.length], type: task.type }));
 }
