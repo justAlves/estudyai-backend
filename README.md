@@ -38,7 +38,7 @@ O worker de RAG é executado sob demanda:
 bun run --cwd=estudyai-backend worker:rag
 ```
 
-O Compose já inclui PostgreSQL 16 com `pgvector` e Redis, ambos persistidos em volumes Docker. Não é necessário criar um banco em outro serviço. O PostgreSQL é exposto em `localhost:5432` para que a migration possa ser executada a partir do host.
+O Compose já inclui PostgreSQL 16 com `pgvector` e Redis, ambos persistidos em volumes Docker. Não é necessário criar um banco em outro serviço. O PostgreSQL é exposto em `localhost:5432` para que a migration possa ser executada a partir do host; os containers usam automaticamente `db:5432` na rede interna.
 
 ## Banco e infraestrutura
 
