@@ -19,7 +19,6 @@ import { matchingSyllabusKey } from "../services/contest-syllabus.service";
 import { noticeStorageConfigured, uploadNotice } from "../services/notice-storage.service";
 import { extractNoticeText } from "../services/notice-text.service";
 import { extractNoticeSubjects } from "../services/notice-subjects.service";
-import { indexNoticeInGlobalRag } from "../services/notice-rag.service";
 import { enqueuePlanGeneration } from "../../../queues";
 
 const editContestDto = createContestDto.extend({ deferPlan: z.boolean().default(false) });
@@ -189,12 +188,6 @@ export const onboardingController = new Elysia({ prefix: "/onboarding", tags: ["
       target: contestNoticeDocuments.contestId,
       set: { originalName: file.name.slice(0, 255), mimeType: file.type, storageKey, status: "COMPLETED", extractedText, subjects, errorMessage: null, updatedAt: new Date() },
     });
-    try {
-      const indexed = await indexNoticeInGlobalRag(contestName, extractedText, subjects);
-      console.info({ contestName, ...indexed }, "edital indexado no RAG global");
-    } catch (error) {
-      console.warn({ err: error, contestName }, "não foi possível indexar o edital no RAG global");
-    }
     await db.delete(studyTasks).where(eq(studyTasks.contestId, contest.id));
     const [planJob] = await db.update(planGenerationJobs).set({ status: "QUEUED" }).where(eq(planGenerationJobs.contestId, contest.id)).returning({ id: planGenerationJobs.id });
     if (planJob) await enqueuePlanGeneration(planJob.id);

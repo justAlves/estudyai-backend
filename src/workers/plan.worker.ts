@@ -11,7 +11,6 @@ import { users } from "../database/tables/users.table";
 import { knownSubjectsForContest, uniqueSubjects } from "../modules/onboarding/services/known-contests.service";
 import { syllabusSubjectsForContest } from "../modules/onboarding/services/contest-syllabus.service";
 import { noticeContentForSubjectExtraction, subjectsFromNoticeHeadings } from "../modules/onboarding/services/notice-subjects.service";
-import { indexNoticeInGlobalRag } from "../modules/onboarding/services/notice-rag.service";
 import { emailService } from "../modules/notifications/services/email.service";
 import { workerLogger } from "../config/logger";
 import { createWorker, enqueuePlanGeneration, queueNames } from "../queues";
@@ -65,14 +64,6 @@ export async function processPlanJob(jobId: string, attempt = 0) {
     // as escolhidas pelo estudante entram em seguida.
     const subjects = uniqueSubjects(noticeSubjects, await syllabusSubjectsForContest(contest.contest.name), await knownSubjectsForContest(contest.contest.name), selectedSubjects.map(({ name }) => name));
     if (!subjects.length) throw new Error("Plano sem matérias");
-
-    if (notice?.extractedText && detectedNoticeSubjects.length > (notice.subjects?.length ?? 0)) {
-      try {
-        await indexNoticeInGlobalRag(contest.contest.name, notice.extractedText, noticeSubjects);
-      } catch (error) {
-        logger.warn({ err: error, contestId: contest.contest.id }, "não foi possível atualizar o RAG do edital legado");
-      }
-    }
 
     const generated = await db.transaction(async (tx) => {
       // O upload de um edital pode invalidar esta execução enquanto ela ainda
