@@ -1,5 +1,6 @@
 import { env } from "../../../config/env";
 import { uniqueSubjects } from "./contest-subjects.service";
+import { generateWithNim, nimConfigured } from "../../ai/services/nim.service";
 
 const genericNoticeHeadings = new Set([
   "ANEXO",
@@ -79,11 +80,20 @@ export function parseNoticeSubjects(content: string) {
 export async function extractNoticeSubjects(name: string, text: string) {
   const focusedText = noticeContentForSubjectExtraction(text);
   const fallback = subjectsFromNoticeHeadings(focusedText);
+  const prompt = `Extraia somente as disciplinas do conteúdo programático do edital ${name}. Não retorne tópicos, cargos, módulos, perfis ou grupos genéricos. Considere todas as disciplinas de todos os perfis/cargos quando houver mais de um. Responda apenas JSON no formato {"subjects":["Língua Portuguesa"]}.\n\nCONTEÚDO PROGRAMÁTICO:\n${focusedText}`;
+  if (nimConfigured()) {
+    try {
+      const parsed = parseNoticeSubjects(await generateWithNim({ prompt, maxTokens: 2_000, temperature: 0.1, json: true }));
+      return fallback.length > parsed.length ? fallback : parsed.length ? parsed : fallback;
+    } catch {
+      // Gemini and deterministic heading extraction remain fallbacks.
+    }
+  }
   if (!env.GEMINI_API_KEY) return fallback;
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${env.GEMINI_GENERATION_MODEL}:generateContent`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
-    body: JSON.stringify({ generationConfig: { responseMimeType: "application/json" }, contents: [{ parts: [{ text: `Extraia somente as disciplinas do conteúdo programático do edital ${name}. Não retorne tópicos, cargos, módulos, perfis ou grupos genéricos. Considere todas as disciplinas de todos os perfis/cargos quando houver mais de um. Responda apenas JSON no formato {"subjects":["Língua Portuguesa"]}.\n\nCONTEÚDO PROGRAMÁTICO:\n${focusedText}` }] }] }),
+    body: JSON.stringify({ generationConfig: { responseMimeType: "application/json" }, contents: [{ parts: [{ text: prompt }] }] }),
   });
   if (!response.ok) return fallback;
   try {

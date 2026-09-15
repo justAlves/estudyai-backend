@@ -6,7 +6,7 @@ import { studyAssessments } from "../../../database/tables/study-assessments.tab
 import { studyMaterials } from "../../../database/tables/study-materials.table";
 import { studyTasks } from "../../../database/tables/study-tasks.table";
 import { users } from "../../../database/tables/users.table";
-import { adaptivePlanMessage, whatsAppService } from "../../notifications/services/whatsapp.service";
+import { emailService } from "../../notifications/services/email.service";
 import { apiLogger } from "../../../config/logger";
 
 type Result = { subject: string; score: number; total: number };
@@ -26,7 +26,7 @@ export function weakSubjects(results: Result[]) {
 }
 
 export async function adaptPlan(contestId: string) {
-  const [contest] = await db.select({ premium: users.premium, phone: users.phone, socialName: users.socialName, name: users.name }).from(contests).innerJoin(users, eq(contests.userId, users.id)).where(eq(contests.id, contestId)).limit(1);
+  const [contest] = await db.select({ premium: users.premium, email: users.email, socialName: users.socialName, name: users.name }).from(contests).innerJoin(users, eq(contests.userId, users.id)).where(eq(contests.id, contestId)).limit(1);
   if (!contest?.premium) return [];
   const planRows = await db.select({ subject: studyTasks.subject }).from(studyTasks).where(eq(studyTasks.contestId, contestId));
   const planSubjects = [...new Set(planRows.map(({ subject }) => subject))];
@@ -46,9 +46,9 @@ export async function adaptPlan(contestId: string) {
     return db.update(studyTasks).set({ subject, title }).where(eq(studyTasks.id, task.id));
   }));
   const next = pending[0];
-  if (next && whatsAppService.isConfigured) {
-    try { await whatsAppService.sendText(contest.phone, adaptivePlanMessage(contest.socialName ?? contest.name, subjects[0], next.id)); }
-    catch (error) { apiLogger.warn({ err: error, contestId, taskId: next.id }, "não foi possível enviar notificação do plano adaptativo"); }
+  if (next && emailService.isConfigured) {
+    try { await emailService.sendAdaptivePlan({ to: contest.email, name: contest.socialName ?? contest.name, subject: subjects[0], taskId: next.id }); }
+    catch (error) { apiLogger.warn({ err: error, contestId, taskId: next.id }, "não foi possível enviar o e-mail do plano adaptativo"); }
   }
   return pending.map((task, index) => ({ id: task.id, subject: subjects[index % subjects.length], type: task.type }));
 }

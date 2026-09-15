@@ -1,6 +1,7 @@
 import { env } from "../../../config/env";
 import type { RagQuestion } from "../../rag/services/rag.service";
 import type { StudyActivity } from "../../../database/tables/study-materials.table";
+import { generateWithNim, nimConfigured } from "../../ai/services/nim.service";
 
 export class GeminiGenerationError extends Error {
   constructor(message: string, readonly retryable: boolean, readonly retryAfterMs?: number) {
@@ -40,7 +41,7 @@ export function activityScore(activities: StudyActivity[], answers: number[]) {
 
 export async function generateMaterial(subject: string, questions: RagQuestion[], syllabus = "", estimatedMinutes = 60) {
   const apiKey = env.GEMINI_API_KEY;
-  if (!apiKey) throw new Error("Defina GEMINI_API_KEY para gerar materiais.");
+  if (!apiKey && !nimConfigured()) throw new Error("Defina NVIDIA_NIM_API_KEY ou GEMINI_API_KEY para gerar materiais.");
   const context = questions.map((question) => question.content).join("\n\n---\n\n");
   const target = Math.max(45, Math.min(90, estimatedMinutes));
   const prompt = `Você é um professor experiente de cursos preparatórios para concursos e vestibulares no Brasil. Crie uma aula realmente completa sobre ${subject}, em português brasileiro e Markdown, planejada para aproximadamente ${target} minutos de estudo concentrado.
@@ -62,7 +63,17 @@ Use subtítulos Markdown, listas e tabelas para facilitar uma sessão longa de e
 
 ${syllabus ? `CONTEÚDO PROGRAMÁTICO DE REFERÊNCIA:\n${syllabus}` : "Não há edital estruturado disponível; use apenas o escopo comprovado pelas questões de contexto e deixe explícitas as limitações."}
 
-QUESTÕES DE CONTEXTO:\n${context}`;
+  QUESTÕES DE CONTEXTO:\n${context}`;
+  if (nimConfigured()) {
+    try {
+      const nimContent = await generateWithNim({ prompt, maxTokens: 7_000, temperature: 0.35 });
+      if (nimContent.replace(/\s+/g, " ").trim().length < 3_000) throw new Error("NIM retornou um material curto demais.");
+      return nimContent;
+    } catch {
+      // Gemini remains the provider fallback when NIM fails or returns invalid content.
+    }
+  }
+  if (!apiKey) throw new Error("NIM falhou e GEMINI_API_KEY não está configurada para fallback.");
   const generate = (model: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
@@ -86,9 +97,17 @@ QUESTÕES DE CONTEXTO:\n${context}`;
 
 export async function generateActivities(subject: string, questions: RagQuestion[], syllabus = "") {
   const apiKey = env.GEMINI_API_KEY;
-  if (!apiKey) throw new Error("Defina GEMINI_API_KEY para gerar atividades.");
+  if (!apiKey && !nimConfigured()) throw new Error("Defina NVIDIA_NIM_API_KEY ou GEMINI_API_KEY para gerar atividades.");
   const context = questions.map((question) => question.content).join("\n\n---\n\n");
   const prompt = `Crie 5 questões objetivas de fixação sobre ${subject}, dentro do conteúdo programático e fundamentadas no contexto. Cada questão deve ser completamente autossuficiente: inclua no enunciado todos os dados, regras e situação necessários para respondê-la. Nunca mencione ou dependa de "o texto", "o item", "a imagem", "a figura", "a tabela", "o gráfico", "o circuito", "a questão anterior", "o material" ou qualquer conteúdo que não esteja reproduzido no próprio enunciado. Não adapte questões do contexto que dependam desses elementos externos. Retorne somente JSON: [{"question":"...","options":["...","...","...","..."],"answer":0,"explanation":"..."}]. A resposta correta deve ser o índice de 0 a 3.${syllabus ? `\n\nCONTEÚDO PROGRAMÁTICO DE REFERÊNCIA:\n${syllabus}` : ""}\n\nCONTEXTO:\n${context}`;
+  if (nimConfigured()) {
+    try {
+      return parseActivities(await generateWithNim({ prompt, maxTokens: 4_000, temperature: 0.25, json: true }));
+    } catch {
+      // Gemini remains the provider fallback when NIM fails or returns invalid JSON.
+    }
+  }
+  if (!apiKey) throw new Error("NIM falhou e GEMINI_API_KEY não está configurada para fallback.");
   const generate = (model: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
   const models = generationModels(env.GEMINI_GENERATION_MODEL);
   let response = await generate(models[0]);

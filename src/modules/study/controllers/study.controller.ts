@@ -16,7 +16,7 @@ import { adaptPlan } from "../services/adaptive-plan.service";
 import { studyAssessments } from "../../../database/tables/study-assessments.table";
 import { nextAvailableStudyDay } from "../services/task-scheduling.service";
 import { env } from "../../../config/env";
-import { whatsAppService } from "../../notifications/services/whatsapp.service";
+import { emailService } from "../../notifications/services/email.service";
 
 async function ownedTask(taskId: string, userId: string) {
   const [task] = await db.select({ id: studyTasks.id, contestId: studyTasks.contestId, estimatedMinutes: studyTasks.estimatedMinutes, scheduledFor: studyTasks.scheduledFor, status: studyTasks.status, dailyStudyMinutes: contests.dailyStudyMinutes }).from(studyTasks).innerJoin(contests, eq(studyTasks.contestId, contests.id)).where(and(eq(studyTasks.id, taskId), eq(contests.userId, userId))).limit(1);
@@ -35,7 +35,7 @@ export const studyController = new Elysia({ prefix: "/study-tasks", tags: ["Stud
     if (!task) { set.status = 409; return { message: "Não há tarefas pendentes para adaptar." }; }
     await db.insert(studyAssessments).values({ id: ulid(), contestId: contest.id, subject: task.subject, type: "ESSAY", score: 0, total: 10 });
     const updatedTasks = await adaptPlan(contest.id);
-    return { status: "ADAPTED", evaluatedSubject: task.subject, updatedTasks, whatsappConfigured: whatsAppService.isConfigured };
+    return { status: "ADAPTED", evaluatedSubject: task.subject, updatedTasks, emailConfigured: emailService.isConfigured };
   }, { auth: true, detail: { summary: "[DEBUG] Força uma adaptação do plano com nota baixa" } })
   .post("/:taskId/material", async ({ params, headers, jwt, set }) => {
     const userId = await userIdFrom(headers.authorization, jwt.verify);
@@ -52,7 +52,15 @@ export const studyController = new Elysia({ prefix: "/study-tasks", tags: ["Stud
       where: eq(materialGenerationJobs.status, "FAILED"),
     });
     const [job] = await db.select({ id: materialGenerationJobs.id }).from(materialGenerationJobs).where(eq(materialGenerationJobs.taskId, params.taskId)).limit(1);
-    if (job) await enqueueMaterialGeneration(job.id);
+    if (job) {
+      try {
+        await enqueueMaterialGeneration(job.id);
+      } catch {
+        await db.update(materialGenerationJobs).set({ status: "FAILED", nextAttemptAt: null }).where(eq(materialGenerationJobs.id, job.id));
+        set.status = 503;
+        return { message: "Não foi possível iniciar a geração da aula. Tente novamente em alguns instantes." };
+      }
+    }
     set.status = 202;
     return { status: "QUEUED" };
   }, { auth: true, detail: { summary: "Solicita o material de uma tarefa" } })

@@ -22,6 +22,8 @@ import { extractNoticeSubjects } from "../services/notice-subjects.service";
 import { indexNoticeInGlobalRag } from "../services/notice-rag.service";
 import { enqueuePlanGeneration } from "../../../queues";
 
+const editContestDto = createContestDto.extend({ deferPlan: z.boolean().default(false) });
+
 const userIdFrom = async (authorization: string | undefined, verify: (token: string) => Promise<unknown>) => {
   const token = authorization?.replace(/^Bearer\s+/i, "");
   const payload = token && await verify(token);
@@ -94,14 +96,22 @@ export const onboardingController = new Elysia({ prefix: "/onboarding", tags: ["
 
         if (!body.complete) return;
 
-        const { socialName: _, plan: __, complete: ___, supportSubjects, ...contestInput } = body;
+        const { socialName: _, plan: __, complete: ___, noticePending: ____, supportSubjects, ...contestInput } = body;
         await tx.update(contests).set({ isActive: false }).where(eq(contests.userId, userId));
         const [contest] = await tx.insert(contests).values({ id: ulid(), userId, ...contestInput }).returning();
         await tx.insert(contestSupportSubjects).values(supportSubjects.map((name) => ({ id: ulid(), contestId: contest.id, name })));
         planJobId = ulid();
         await tx.insert(planGenerationJobs).values({ id: planJobId, contestId: contest.id });
       });
-      await enqueuePlanGeneration(planJobId);
+      if (!body.noticePending) {
+        try {
+          await enqueuePlanGeneration(planJobId);
+        } catch (error) {
+          await db.update(planGenerationJobs).set({ status: "FAILED" }).where(eq(planGenerationJobs.id, planJobId));
+          set.status = 503;
+          return { message: "Não foi possível iniciar seu plano agora. Tente salvar o onboarding novamente." };
+        }
+      }
 
       set.status = 201;
       return { completed: body.complete };
@@ -191,6 +201,28 @@ export const onboardingController = new Elysia({ prefix: "/onboarding", tags: ["
     set.status = 202;
     return { status: "RECEIVED", message: "Seu edital foi recebido e será usado para preparar seu plano." };
   }, { parse: "none" })
+  .patch("/contest", async ({ body, headers, jwt, set }) => {
+    const userId = await userIdFrom(headers.authorization, jwt.verify);
+    if (!userId) { set.status = 401; return { message: "Token inválido ou ausente" }; }
+    const [user] = await db.select({ premium: users.premium }).from(users).where(eq(users.id, userId)).limit(1);
+    if (!user?.premium) { set.status = 403; return { message: "A troca de concurso requer o plano Pro." }; }
+    const [current] = await db.select({ id: contests.id, name: contests.name }).from(contests).where(and(eq(contests.userId, userId), eq(contests.isActive, true))).limit(1);
+    if (!current) { set.status = 404; return { message: "Concurso ativo não encontrado." }; }
+    const [contest] = await db.transaction(async (tx) => {
+      const changedName = current.name !== body.name;
+      const [updated] = await tx.update(contests).set({ name: body.name, examiningBoard: body.examiningBoard, examDate: body.examDate, dailyStudyMinutes: body.dailyStudyMinutes, isPopular: body.isPopular }).where(eq(contests.id, current.id)).returning();
+      await tx.delete(contestSupportSubjects).where(eq(contestSupportSubjects.contestId, current.id));
+      await tx.insert(contestSupportSubjects).values(body.supportSubjects.map((name) => ({ id: ulid(), contestId: current.id, name })));
+      await tx.delete(studyTasks).where(eq(studyTasks.contestId, current.id));
+      if (changedName) await tx.delete(contestNoticeDocuments).where(eq(contestNoticeDocuments.contestId, current.id));
+      const [job] = await tx.update(planGenerationJobs).set({ status: "QUEUED" }).where(eq(planGenerationJobs.contestId, current.id)).returning({ id: planGenerationJobs.id });
+      return [updated, job] as const;
+    });
+    const [job] = await db.select({ id: planGenerationJobs.id }).from(planGenerationJobs).where(eq(planGenerationJobs.contestId, current.id)).limit(1);
+    if (!body.deferPlan && job) await enqueuePlanGeneration(job.id);
+    set.status = 200;
+    return contest;
+  }, { body: editContestDto })
   .get("/contests", async ({ headers, jwt, set }) => {
     const userId = await userIdFrom(headers.authorization, jwt.verify);
     if (!userId) {

@@ -13,6 +13,7 @@ export const saveOnboardingDto = createContestDto.extend({
   socialName: z.string().trim().min(2).max(120),
   plan: z.enum(["free", "pro"]),
   complete: z.boolean(),
+  noticePending: z.boolean().default(false),
 });
 
 export type CreateContestDto = z.infer<typeof createContestDto>;

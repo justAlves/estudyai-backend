@@ -2,6 +2,7 @@ import { env } from "../../../config/env";
 import { GeminiGenerationError, simulationGenerationModels } from "../../study/services/material.service";
 import { searchQuestions } from "../../rag/services/rag.service";
 import { syllabusContext } from "../../onboarding/services/contest-syllabus.service";
+import { generateWithNim, nimConfigured } from "../../ai/services/nim.service";
 
 export const simulationQuestionCounts = [5, 10, 20, 30] as const;
 
@@ -128,7 +129,7 @@ async function contextForSubjects(contestName: string, contestId: string, subjec
 
 export async function generateSimulationQuestions(contestName: string, examiningBoard: string, contestId: string, subjects: string[], quantity: number) {
   const apiKey = env.GEMINI_API_KEY;
-  if (!apiKey) throw new Error("Defina GEMINI_API_KEY para gerar simulados.");
+  if (!apiKey && !nimConfigured()) throw new Error("Defina NVIDIA_NIM_API_KEY ou GEMINI_API_KEY para gerar simulados.");
   const context = await contextForSubjects(contestName, contestId, subjects);
   const reference = context || "Não há conteúdo estruturado disponível. Gere questões apenas dentro do escopo explicitamente indicado pelas matérias e deixe de lado detalhes locais não confirmados.";
   const prompt = `Você é um elaborador experiente de provas para concursos públicos e vestibulares brasileiros. Gere exatamente ${quantity} questões objetivas inéditas para o concurso "${contestName}", cuja banca examinadora é "${examiningBoard}".
@@ -156,6 +157,15 @@ MATÉRIAS SELECIONADAS: ${subjects.join(", ")}
 
 CONTEÚDO E QUESTÕES DE REFERÊNCIA:
 ${reference}`;
+  if (nimConfigured()) {
+    try {
+      const nimContent = await generateWithNim({ prompt, maxTokens: Math.min(30_000, Math.max(7_000, quantity * 1_700)), temperature: 0.35, json: true });
+      return parseSimulationQuestions(nimContent, quantity, subjects).map((question, index) => ({ ...question, subject: subjects.includes(question.subject) ? question.subject : subjects[index % subjects.length] }));
+    } catch {
+      // Gemini remains the provider fallback when NIM fails or returns invalid JSON.
+    }
+  }
+  if (!apiKey) throw new Error("NIM falhou e GEMINI_API_KEY não está configurada para fallback.");
   const body = JSON.stringify({
     generationConfig: {
       temperature: 0.35,

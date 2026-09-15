@@ -12,7 +12,7 @@ import { knownSubjectsForContest, uniqueSubjects } from "../modules/onboarding/s
 import { syllabusSubjectsForContest } from "../modules/onboarding/services/contest-syllabus.service";
 import { noticeContentForSubjectExtraction, subjectsFromNoticeHeadings } from "../modules/onboarding/services/notice-subjects.service";
 import { indexNoticeInGlobalRag } from "../modules/onboarding/services/notice-rag.service";
-import { planReadyMessage, whatsAppService } from "../modules/notifications/services/whatsapp.service";
+import { emailService } from "../modules/notifications/services/email.service";
 import { workerLogger } from "../config/logger";
 import { createWorker, enqueuePlanGeneration, queueNames } from "../queues";
 
@@ -50,6 +50,7 @@ export async function processPlanJob(jobId: string, attempt = 0) {
 
   const [job] = await db.update(planGenerationJobs).set({ status: "PROCESSING" }).where(and(eq(planGenerationJobs.id, queued.id), eq(planGenerationJobs.status, "QUEUED"))).returning();
   if (!job) return;
+  const processingUpdatedAt = job.updatedAt;
   logger.info({ jobId: job.id, contestId: job.contestId, attempt: attempt + 1 }, "iniciando geração do plano");
 
   try {
@@ -73,17 +74,34 @@ export async function processPlanJob(jobId: string, attempt = 0) {
       }
     }
 
-    await db.transaction(async (tx) => {
+    const generated = await db.transaction(async (tx) => {
+      // O upload de um edital pode invalidar esta execução enquanto ela ainda
+      // está consultando o RAG. Nesse caso, não deixe a execução antiga
+      // apagar/substituir o resultado da geração mais nova.
+      const [completed] = await tx.update(planGenerationJobs)
+        .set({ status: "COMPLETED" })
+        .where(and(
+          eq(planGenerationJobs.id, job.id),
+          eq(planGenerationJobs.status, "PROCESSING"),
+          eq(planGenerationJobs.updatedAt, processingUpdatedAt),
+        ))
+        .returning({ id: planGenerationJobs.id });
+      if (!completed) return false;
+
       if (notice && detectedNoticeSubjects.length > notice.subjects.length) {
         await tx.update(contestNoticeDocuments).set({ subjects: noticeSubjects }).where(eq(contestNoticeDocuments.contestId, contest.contest.id));
       }
       await tx.delete(studyTasks).where(eq(studyTasks.contestId, contest.contest.id));
       await tx.insert(studyTasks).values(initialTasks(subjects, contest.contest.dailyStudyMinutes, new Date(), contest.premium ? 4 : 1).map((task) => ({ id: ulid(), contestId: contest.contest.id, ...task })));
-      await tx.update(planGenerationJobs).set({ status: "COMPLETED" }).where(eq(planGenerationJobs.id, job.id));
+      return true;
     });
+    if (!generated) return;
 
-    const [user] = await db.select({ phone: users.phone, socialName: users.socialName, name: users.name }).from(users).where(eq(users.id, contest.contest.userId)).limit(1);
-    if (user && whatsAppService.isConfigured) await whatsAppService.sendText(user.phone, planReadyMessage(user.socialName ?? user.name, contest.contest.name));
+    const [user] = await db.select({ email: users.email, socialName: users.socialName, name: users.name }).from(users).where(eq(users.id, contest.contest.userId)).limit(1);
+    if (user && emailService.isConfigured) {
+      try { await emailService.sendPlanReady({ to: user.email, name: user.socialName ?? user.name, contestName: contest.contest.name, contestId: contest.contest.id }); }
+      catch (error) { logger.warn({ err: error, contestId: contest.contest.id }, "não foi possível enviar o e-mail de plano pronto"); }
+    }
     logger.info({ jobId: job.id, contestId: job.contestId, premium: contest.premium, weeks: contest.premium ? 4 : 1, subjects: subjects.length, tasks: subjects.length * (contest.premium ? 20 : 5) }, "plano gerado com sucesso");
   } catch (error) {
     logger.error({ err: error, jobId: job.id, contestId: job.contestId, attempt: attempt + 1 }, "falha ao gerar plano");

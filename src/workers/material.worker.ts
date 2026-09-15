@@ -7,7 +7,7 @@ import { materialGenerationJobs } from "../database/tables/material-generation-j
 import { studyMaterials } from "../database/tables/study-materials.table";
 import { studyTasks } from "../database/tables/study-tasks.table";
 import { users } from "../database/tables/users.table";
-import { materialReadyMessage, whatsAppService } from "../modules/notifications/services/whatsapp.service";
+import { emailService } from "../modules/notifications/services/email.service";
 import { searchQuestions } from "../modules/rag/services/rag.service";
 import { GeminiGenerationError, generateActivities, generateMaterial, materialRetryDelayMs, sourceList } from "../modules/study/services/material.service";
 import { syllabusContext } from "../modules/onboarding/services/contest-syllabus.service";
@@ -26,7 +26,7 @@ export async function processMaterialJob(jobId: string) {
   logger.info({ jobId: job.id, taskId: job.taskId, attempt: job.attemptCount + 1 }, "iniciando geração do material");
 
   try {
-    const [task] = await db.select({ subject: studyTasks.subject, type: studyTasks.type, estimatedMinutes: studyTasks.estimatedMinutes, contestId: contests.id, contestName: contests.name, phone: users.phone, socialName: users.socialName, name: users.name }).from(studyTasks).innerJoin(contests, eq(studyTasks.contestId, contests.id)).innerJoin(users, eq(contests.userId, users.id)).where(eq(studyTasks.id, job.taskId)).limit(1);
+    const [task] = await db.select({ subject: studyTasks.subject, type: studyTasks.type, estimatedMinutes: studyTasks.estimatedMinutes, contestId: contests.id, contestName: contests.name, email: users.email, socialName: users.socialName, name: users.name }).from(studyTasks).innerJoin(contests, eq(studyTasks.contestId, contests.id)).innerJoin(users, eq(contests.userId, users.id)).where(eq(studyTasks.id, job.taskId)).limit(1);
     if (!task) throw new Error("Tarefa não encontrada");
 
     const syllabus = await syllabusContext(task.contestName, task.subject, task.contestId);
@@ -37,7 +37,10 @@ export async function processMaterialJob(jobId: string) {
     const activities = task.type === "QUESTIONS" ? await generateActivities(task.subject, questions, syllabus) : [];
     await db.insert(studyMaterials).values({ id: ulid(), taskId: job.taskId, content, sources: sourceList(questions), activities }).onConflictDoNothing();
     await db.update(materialGenerationJobs).set({ status: "COMPLETED" }).where(eq(materialGenerationJobs.id, job.id));
-    if (whatsAppService.isConfigured) await whatsAppService.sendText(task.phone, materialReadyMessage(task.socialName ?? task.name, task.subject, job.taskId));
+    if (emailService.isConfigured) {
+      try { await emailService.sendMaterialReady({ to: task.email, name: task.socialName ?? task.name, subject: task.subject, taskId: job.taskId }); }
+      catch (error) { logger.warn({ err: error, taskId: job.taskId }, "não foi possível enviar o e-mail de material pronto"); }
+    }
     logger.info({ jobId: job.id, taskId: job.taskId }, "material gerado com sucesso");
   } catch (error) {
     logger.error({ err: error, jobId: job.id, taskId: job.taskId, attempt: job.attemptCount + 1 }, "falha ao gerar material");

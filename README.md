@@ -55,7 +55,7 @@ O banco deve ser PostgreSQL e precisa suportar `pgvector` quando o RAG for utili
 
 ## Variáveis de ambiente
 
-Copie `.env.example` para `.env`. `DATABASE_URL` e `JWT_SECRET` são obrigatórias. `REDIS_URL` pode apontar para Redis local ou gerenciado. `GEMINI_API_KEY`, Stripe, WhatsApp e R2 habilitam as integrações correspondentes.
+Copie `.env.example` para `.env`. `DATABASE_URL` e `JWT_SECRET` são obrigatórias. `REDIS_URL` pode apontar para Redis local ou gerenciado. `GEMINI_API_KEY`, Stripe, Resend e R2 habilitam as integrações correspondentes.
 
 Nunca commite o arquivo `.env`.
 
@@ -82,4 +82,4 @@ bun run collect:check
 - Planos, materiais, simulados e adaptação de estudos
 - RAG de questões e editais
 - Redações: sugestão de tema, upload/texto, correção assíncrona e histórico
-- Integração WhatsApp para notificações
+- Integração Resend para notificações e recuperação de senha por e-mail

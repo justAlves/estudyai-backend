@@ -77,7 +77,7 @@ export const billingController = new Elysia({ prefix: "/billing", tags: ["Billin
       return { message: error instanceof StripeBillingError ? error.message : "Webhook inválido" };
     }
 
-    const object = event.data.object as Record<string, unknown>;
+    const object = event.data.object as unknown as Record<string, unknown>;
     const metadata = (object.metadata as Record<string, string> | null) ?? {};
     const providerCheckoutId = event.type.startsWith("checkout.session.") ? String(object.id) : undefined;
     const providerSubscriptionId = typeof object.subscription === "string" ? object.subscription : event.type.startsWith("customer.subscription.") ? String(object.id) : undefined;

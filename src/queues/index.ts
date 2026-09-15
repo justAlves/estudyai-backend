@@ -56,7 +56,17 @@ export function createWorker<T>(queueName: string, processor: Processor<T>, opti
 }
 
 export function enqueuePlanGeneration(jobId: string) {
-  return enqueue(queueNames.plans, jobId, { attempts: 3, backoff: { type: "exponential", delay: 15_000 } });
+  // Um mesmo registro de banco pode representar várias gerações (por exemplo,
+  // quando o estudante envia um edital depois do onboarding). O ID do job do
+  // BullMQ precisa ser novo para que um job concluído não deduplique a nova
+  // solicitação.
+  return getQueue(queueNames.plans).add("process", { jobId }, {
+    jobId: `db-${jobId}-${ulid()}`,
+    attempts: 3,
+    backoff: { type: "exponential", delay: 15_000 },
+    removeOnComplete: 1000,
+    removeOnFail: 1000,
+  });
 }
 
 export function enqueueMaterialGeneration(jobId: string) {

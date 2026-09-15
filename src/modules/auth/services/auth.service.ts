@@ -11,7 +11,7 @@ import type { RefreshTokenDto } from "../dtos/refresh-token.dto";
 import type { RegisterDto } from "../dtos/register.dto";
 import type { ResetPasswordDto } from "../dtos/reset-password.dto";
 import type { VerifyResetCodeDto } from "../dtos/verify-reset-code.dto";
-import { WhatsAppError, whatsAppService } from "../../notifications/services/whatsapp.service";
+import { EmailError, emailService } from "../../notifications/services/email.service";
 
 type SignAccessToken = (userId: string) => Promise<string>;
 
@@ -26,10 +26,10 @@ export class AuthError extends Error {
 
 export class AuthService {
   async requestPasswordReset(input: ForgotPasswordDto) {
-    if (!whatsAppService.isConfigured) throw new AuthError(503, "WhatsApp indisponível no momento");
+    if (!emailService.isConfigured) throw new AuthError(503, "E-mail indisponível no momento");
 
     const [user] = await db
-      .select({ id: users.id, phone: users.phone })
+      .select({ id: users.id, email: users.email })
       .from(users)
       .where(eq(users.email, input.email.toLowerCase()))
       .limit(1);
@@ -56,10 +56,10 @@ export class AuthService {
     });
 
     try {
-      await whatsAppService.sendText(user.phone, `Seu código EstudeAI é ${code}. Ele expira em 10 minutos.`);
+      await emailService.sendPasswordResetCode(user.email, code);
     } catch (error) {
       await db.delete(passwordResetTokens).where(eq(passwordResetTokens.id, id));
-      if (error instanceof WhatsAppError) throw new AuthError(503, error.message);
+      if (error instanceof EmailError) throw new AuthError(503, error.message);
       throw error;
     }
   }

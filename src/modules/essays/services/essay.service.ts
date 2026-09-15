@@ -3,6 +3,7 @@ import { GoogleGenAI } from "@google/genai";
 import { apiLogger } from "../../../config/logger";
 import type { EssayAnalysis } from "../../../database/tables/essays.table";
 import { essayGenerationModels } from "../../study/services/material.service";
+import { generateWithNim, nimConfigured } from "../../ai/services/nim.service";
 
 function cleanJson(content: string) { return content.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim(); }
 
@@ -19,11 +20,19 @@ function validateAnalysis(value: unknown): EssayAnalysis {
 }
 
 export async function analyzeEssay(topic: string, essayText: string, file?: File) {
-  if (!env.GEMINI_API_KEY) throw new Error("Defina GEMINI_API_KEY para corrigir redações.");
+  if (!env.GEMINI_API_KEY && !nimConfigured()) throw new Error("Defina NVIDIA_NIM_API_KEY ou GEMINI_API_KEY para corrigir redações.");
   const parts: Record<string, unknown>[] = [];
   if (essayText.trim()) parts.push({ text: `REDAÇÃO TRANSCRITA:\n${essayText}` });
   if (file) parts.push({ inlineData: { mimeType: file.type || "application/octet-stream", data: Buffer.from(await file.arrayBuffer()).toString("base64") } });
   const prompt = `Você é uma banca examinadora de redações em português brasileiro. Analise a redação enviada para o tema "${topic}". Corrija com rigor pedagógico, como uma banca, mas explique de modo que o estudante consiga melhorar. Use as cinco competências do ENEM como referência: domínio da norma padrão; compreensão do tema e do tipo textual; seleção e organização de argumentos; coesão; proposta de intervenção. Se o arquivo estiver ilegível, deixe isso explícito nos pontos de melhoria.\n\nResponda exclusivamente JSON no formato: {"overallScore":0,"summary":"...","competencies":[{"name":"Competência 1","score":0,"maxScore":200,"strengths":["..."],"improvements":["..."]}],"strengths":["..."],"improvements":["..."],"actionPlan":["..."]}. Cada score deve ser de 0 a 200 e overallScore a soma. Não invente trechos que não estejam na redação. Seja específico, citando pequenos fragmentos apenas quando necessário.`;
+  if (!file && nimConfigured()) {
+    try {
+      return validateAnalysis(JSON.parse(cleanJson(await generateWithNim({ prompt: `${prompt}\n\nREDAÇÃO TRANSCRITA:\n${essayText}`, maxTokens: 8_000, temperature: 0.2, json: true }))));
+    } catch {
+      // Gemini remains the provider fallback when NIM fails or returns invalid JSON.
+    }
+  }
+  if (!env.GEMINI_API_KEY) throw new Error("NIM falhou e GEMINI_API_KEY não está configurada para fallback.");
   parts.unshift({ text: prompt });
   const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
   const models = essayGenerationModels(env.GEMINI_GENERATION_MODEL);
@@ -40,10 +49,21 @@ export async function analyzeEssay(topic: string, essayText: string, file?: File
 }
 
 export async function suggestEssayTopic() {
-  if (!env.GEMINI_API_KEY) throw new Error("Defina GEMINI_API_KEY para sugerir temas.");
+  if (!env.GEMINI_API_KEY && !nimConfigured()) throw new Error("Defina NVIDIA_NIM_API_KEY ou GEMINI_API_KEY para sugerir temas.");
   const models = essayGenerationModels(env.GEMINI_GENERATION_MODEL);
-  const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
   const contents = "Gere um único tema atual e relevante para uma redação dissertativo-argumentativa brasileira, com no máximo 180 caracteres. Retorne exclusivamente JSON válido no formato {\"topic\":\"enunciado completo do tema\"}. Não inclua Markdown, explicações ou texto antes/depois do JSON.";
+  if (nimConfigured()) {
+    try {
+      const raw = await generateWithNim({ prompt: contents, maxTokens: 512, temperature: 0.8, json: true });
+      const parsed = JSON.parse(cleanJson(raw)) as { topic?: unknown };
+      if (typeof parsed.topic === "string" && isUsableEssayTopic(parsed.topic)) return parsed.topic.trim();
+      throw new Error("NIM retornou tema inválido.");
+    } catch {
+      // Gemini remains the provider fallback when NIM fails or returns an invalid topic.
+    }
+  }
+  if (!env.GEMINI_API_KEY) throw new Error("NIM falhou e GEMINI_API_KEY não está configurada para fallback.");
+  const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
   const topicConfig = { temperature: 0.8, maxOutputTokens: 2_048, responseMimeType: "application/json", responseSchema: { type: "OBJECT", properties: { topic: { type: "STRING" } }, required: ["topic"] } } as const;
   let response;
   try { response = await ai.models.generateContent({ model: models[0], contents, config: topicConfig }); }

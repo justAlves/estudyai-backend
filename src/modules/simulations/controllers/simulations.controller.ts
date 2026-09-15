@@ -99,7 +99,10 @@ export const simulationsController = new Elysia({ prefix: "/simulations", tags: 
     try {
       await enqueueSimulationGeneration(jobId);
     } catch (error) {
-      await db.update(simulations).set({ status: "FAILED" }).where(eq(simulations.id, simulationId));
+      await db.transaction(async (tx) => {
+        await tx.update(simulations).set({ status: "FAILED" }).where(eq(simulations.id, simulationId));
+        await tx.update(simulationGenerationJobs).set({ status: "FAILED", errorMessage: "Não foi possível colocar o simulado na fila." }).where(eq(simulationGenerationJobs.id, jobId));
+      });
       set.status = 503;
       return { message: "O gerador de simulados está temporariamente indisponível." };
     }
