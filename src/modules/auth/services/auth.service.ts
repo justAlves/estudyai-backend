@@ -12,6 +12,7 @@ import type { RegisterDto } from "../dtos/register.dto";
 import type { ResetPasswordDto } from "../dtos/reset-password.dto";
 import type { VerifyResetCodeDto } from "../dtos/verify-reset-code.dto";
 import { EmailError, emailService } from "../../notifications/services/email.service";
+import { env } from "../../../config/env";
 
 type SignAccessToken = (userId: string) => Promise<string>;
 
@@ -129,11 +130,37 @@ export class AuthService {
       .where(eq(users.email, input.email.toLowerCase()))
       .limit(1);
 
-    if (!user || !(await Bun.password.verify(input.password, user.password))) {
+    if (!user || !user.password || !(await Bun.password.verify(input.password, user.password))) {
       throw new AuthError(401, "E-mail ou senha inválidos");
     }
 
     return this.issueTokens(user.id, signAccessToken);
+  }
+
+  async loginWithGoogle(credential: string, signAccessToken: SignAccessToken) {
+    if (!env.GOOGLE_CLIENT_ID) throw new AuthError(503, "Login com Google indisponível no momento.");
+
+    const tokenResponse = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(credential)}`);
+    if (!tokenResponse.ok) throw new AuthError(401, "Não foi possível validar sua conta Google.");
+    const profile = await tokenResponse.json() as { aud?: string; email?: string; email_verified?: boolean | string; name?: string };
+    if (profile.aud !== env.GOOGLE_CLIENT_ID) throw new AuthError(401, "Não foi possível validar sua conta Google.");
+    if (!profile.email || ![true, "true"].includes(profile.email_verified ?? false)) {
+      throw new AuthError(401, "Não foi possível validar sua conta Google.");
+    }
+
+    const email = profile.email.toLowerCase();
+    const [user] = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1);
+    if (user) throw new AuthError(409, "Este e-mail já está cadastrado. Entre com e-mail e senha.");
+
+    const [created] = await db.insert(users).values({
+      id: ulid(),
+      name: profile.name?.trim() || email.split("@")[0],
+      email,
+      firstLoginAt: new Date(),
+    }).onConflictDoNothing({ target: users.email }).returning({ id: users.id });
+
+    if (!created) throw new AuthError(409, "Este e-mail já está cadastrado. Entre com e-mail e senha.");
+    return this.issueTokens(created.id, signAccessToken);
   }
 
   async refresh(input: RefreshTokenDto, signAccessToken: SignAccessToken) {

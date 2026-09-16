@@ -8,12 +8,12 @@ export const users = pgTable("users", {
   onboardingPreferences: jsonb("onboarding_preferences"),
   onboardingCompletedAt: timestamp("onboarding_completed_at", { withTimezone: true }),
   premium: boolean("premium").notNull().default(false),
-  password: varchar("password", { length: 255 }).notNull(),
+  password: varchar("password", { length: 255 }),
   firstLoginAt: timestamp("first_login_at", { withTimezone: true }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .defaultNow()
     .$onUpdate(() => new Date())
     .notNull(),
-  phone: varchar("phone", { length: 20 }).notNull(),
+  phone: varchar("phone", { length: 20 }),
 });

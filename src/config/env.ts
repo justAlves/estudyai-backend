@@ -9,6 +9,7 @@ export const env = z
       .refine((value) => value.startsWith("postgres://") || value.startsWith("postgresql://")),
     REDIS_URL: z.url().optional(),
     JWT_SECRET: z.string().min(32),
+    GOOGLE_CLIENT_ID: z.string().min(1).optional(),
     OTEL_SERVICE_NAME: z.string().min(1).default("estudeai-api"),
     LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),
     LOG_PRETTY: z.enum(["true", "false"]).transform((value) => value === "true").default(true),

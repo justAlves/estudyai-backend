@@ -18,6 +18,7 @@ import { db } from "../../../database";
 const authService = new AuthService();
 const profileDto = z.object({ name: z.string().trim().min(2).max(120), socialName: z.string().trim().min(2).max(120), email: z.email() });
 const passwordDto = z.object({ currentPassword: z.string().min(1), newPassword: z.string().min(8).max(72) });
+const googleLoginDto = z.object({ credential: z.string().min(1) });
 
 export const authController = new Elysia({ prefix: "/auth", tags: ["Auth"] })
   .use(jwt({ name: "jwt", secret: env.JWT_SECRET }))
@@ -104,6 +105,23 @@ export const authController = new Elysia({ prefix: "/auth", tags: ["Auth"] })
     { body: loginDto, detail: { summary: "Autentica uma conta" } },
   )
   .post(
+    "/google",
+    async ({ body, jwt, set }) => {
+      try {
+        return await authService.loginWithGoogle(body.credential, (userId) =>
+          jwt.sign({ sub: userId, exp: "15m", iat: true }),
+        );
+      } catch (error) {
+        if (error instanceof AuthError) {
+          set.status = error.status;
+          return { message: error.message };
+        }
+        throw error;
+      }
+    },
+    { body: googleLoginDto, detail: { summary: "Cria uma conta usando Google" } },
+  )
+  .post(
     "/refresh",
     async ({ body, jwt, set }) => {
       try {
@@ -142,7 +160,7 @@ export const authController = new Elysia({ prefix: "/auth", tags: ["Auth"] })
     const userId = await userIdFrom(headers.authorization, jwt.verify);
     if (!userId) { set.status = 401; return { message: "Token inválido ou ausente" }; }
     const [user] = await db.select({ password: users.password }).from(users).where(eq(users.id, userId)).limit(1);
-    if (!user || !(await Bun.password.verify(body.currentPassword, user.password))) { set.status = 401; return { message: "A senha atual está incorreta." }; }
+    if (!user || !user.password || !(await Bun.password.verify(body.currentPassword, user.password))) { set.status = 401; return { message: "A senha atual está incorreta." }; }
     await db.transaction(async (tx) => {
       await tx.update(users).set({ password: await Bun.password.hash(body.newPassword) }).where(eq(users.id, userId));
       await tx.delete(refreshTokens).where(eq(refreshTokens.userId, userId));
