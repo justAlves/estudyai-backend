@@ -40,7 +40,7 @@ export function activityScore(activities: StudyActivity[], answers: number[]) {
 }
 
 export function normalizeMaterialMarkdown(content: string) {
-  return content.replace(/^(\s*(?:#{1,4}\s+)?\*\*[^*\n]+\*\*)\s+`{1,3}\s*(mermaid\s+(?:graph|flowchart)\b[^`\n]+?)\s*`{1,3}\s*$/gim, (_, title: string, chart: string) => `${title}\n\n\`\`\`mermaid\n${chart.replace(/^mermaid\s+/i, "").trim()}\n\`\`\``);
+  return content.replace(/(`{1,3})\s*(mermaid\s+(?:graph|flowchart)\b[\s\S]*?)\s*\1/gim, (_, _ticks: string, chart: string) => `\`\`\`mermaid\n${chart.replace(/^mermaid\s+/i, "").trim()}\n\`\`\``);
 }
 
 export async function generateMaterial(subject: string, questions: RagQuestion[], syllabus = "", estimatedMinutes = 60) {

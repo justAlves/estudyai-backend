@@ -6,6 +6,7 @@ assert.deepEqual(generationModels("gemini-2.5-flash"), ["gemini-3.6-flash", "gem
 assert.deepEqual(generationModels("gemini-3.6-flash"), ["gemini-3.6-flash", "gemini-3.5-flash"]);
 assert.deepEqual([1, 2, 3, 4, 5].map(materialRetryDelayMs), [15_000, 30_000, 60_000, 120_000, 240_000]);
 assert.match(normalizeMaterialMarkdown("**Mermaid – Hierarquia** ``mermaid graph TD A-->B``"), /```mermaid\ngraph TD A-->B\n```/);
+assert.match(normalizeMaterialMarkdown("**Mapa** ``mermaid graph TD A[Planejamento] --> B[Organização]\nB --> C[Direção] C --> D[Controle]``"), /```mermaid\ngraph TD A\[Planejamento\][\s\S]*D\[Controle\]\n```/);
 assert.equal(parseActivities('[{"question":"x","options":["a","b","c","d"],"answer":0,"explanation":"x"}]')[0].answer, 0);
 assert.equal(activityScore(parseActivities('[{"question":"x","options":["a","b","c","d"],"answer":0,"explanation":"x"}]'), [0]), 1);
 console.info("study:check passou");
