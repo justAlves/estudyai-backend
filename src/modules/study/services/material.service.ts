@@ -39,12 +39,16 @@ export function activityScore(activities: StudyActivity[], answers: number[]) {
   return answers.filter((answer, index) => answer === activities[index].answer).length;
 }
 
+export function normalizeMaterialMarkdown(content: string) {
+  return content.replace(/^(\s*(?:#{1,4}\s+)?\*\*[^*\n]+\*\*)\s+`{1,3}\s*(mermaid\s+(?:graph|flowchart)\b[^`\n]+?)\s*`{1,3}\s*$/gim, (_, title: string, chart: string) => `${title}\n\n\`\`\`mermaid\n${chart.replace(/^mermaid\s+/i, "").trim()}\n\`\`\``);
+}
+
 export async function generateMaterial(subject: string, questions: RagQuestion[], syllabus = "", estimatedMinutes = 60) {
   const apiKey = env.GEMINI_API_KEY;
   if (!apiKey && !nimConfigured()) throw new Error("Defina NVIDIA_NIM_API_KEY ou GEMINI_API_KEY para gerar materiais.");
   const context = questions.map((question) => question.content).join("\n\n---\n\n");
-  const target = Math.max(45, Math.min(90, estimatedMinutes));
-  const prompt = `Você é um professor experiente de cursos preparatórios para concursos e vestibulares no Brasil. Crie uma aula realmente completa sobre ${subject}, em português brasileiro e Markdown, planejada para aproximadamente ${target} minutos de estudo concentrado.
+  const target = Math.max(60, Math.min(120, estimatedMinutes));
+  const prompt = `Você é um professor experiente de cursos preparatórios para concursos e vestibulares no Brasil. Crie uma aula realmente completa, longa e aprofundada sobre ${subject}, em português brasileiro e Markdown, planejada para aproximadamente ${target} minutos de estudo concentrado.
 
 Não faça um resumo superficial. Desenvolva todos os tópicos e subtópicos explicitamente presentes no CONTEÚDO PROGRAMÁTICO DE REFERÊNCIA. O conteúdo deve ser autossuficiente para o estudante estudar sem abrir outra fonte.
 
@@ -59,16 +63,16 @@ Estruture obrigatoriamente a aula com:
 8. Checklist de revisão e resumo final;
 9. Cinco perguntas discursivas de autoavaliação, sem gabarito imediato.
 
-Use subtítulos Markdown, listas e tabelas para facilitar uma sessão longa de estudo. Quando houver hierarquia, fluxo ou relação entre elementos, use um bloco de código Mermaid simples; nunca use diagramas ASCII. Não invente leis, artigos, números, fórmulas, datas ou fatos que não estejam no edital ou no contexto. Se um detalhe não puder ser confirmado, sinalize a limitação em vez de inventar. Não mencione que você recebeu um prompt, contexto ou edital.
+Use subtítulos Markdown, listas e tabelas para facilitar uma sessão longa de estudo. Quando houver hierarquia, fluxo ou relação entre elementos, use sempre um bloco de código Mermaid separado, com a linguagem declarada, nunca Mermaid inline ou na mesma linha do título. Nunca use diagramas ASCII. Não invente leis, artigos, números, fórmulas, datas ou fatos que não estejam no edital ou no contexto. Se um detalhe não puder ser confirmado, sinalize a limitação em vez de inventar. Não mencione que você recebeu um prompt, contexto ou edital.
 
 ${syllabus ? `CONTEÚDO PROGRAMÁTICO DE REFERÊNCIA:\n${syllabus}` : "Não há edital estruturado disponível; use apenas o escopo comprovado pelas questões de contexto e deixe explícitas as limitações."}
 
   QUESTÕES DE CONTEXTO:\n${context}`;
   if (nimConfigured()) {
     try {
-      const nimContent = await generateWithNim({ prompt, maxTokens: 7_000, temperature: 0.35 });
-      if (nimContent.replace(/\s+/g, " ").trim().length < 3_000) throw new Error("NIM retornou um material curto demais.");
-      return nimContent;
+      const nimContent = await generateWithNim({ prompt, maxTokens: 12_000, temperature: 0.35 });
+      if (nimContent.replace(/\s+/g, " ").trim().length < 5_000) throw new Error("NIM retornou um material curto demais.");
+      return normalizeMaterialMarkdown(nimContent);
     } catch {
       // Gemini remains the provider fallback when NIM fails or returns invalid content.
     }
@@ -77,7 +81,7 @@ ${syllabus ? `CONTEÚDO PROGRAMÁTICO DE REFERÊNCIA:\n${syllabus}` : "Não há 
   const generate = (model: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-    body: JSON.stringify({ generationConfig: { temperature: 0.35, maxOutputTokens: 7_000 }, contents: [{ parts: [{ text: prompt }] }] }),
+    body: JSON.stringify({ generationConfig: { temperature: 0.35, maxOutputTokens: 12_000 }, contents: [{ parts: [{ text: prompt }] }] }),
   });
   const models = generationModels(env.GEMINI_GENERATION_MODEL);
   let response = await generate(models[0]);
@@ -91,8 +95,8 @@ ${syllabus ? `CONTEÚDO PROGRAMÁTICO DE REFERÊNCIA:\n${syllabus}` : "Não há 
   const body = (await response.json()) as { candidates?: { content?: { parts?: { text?: string }[] } }[] };
   const content = body.candidates?.[0]?.content?.parts?.map(({ text }) => text ?? "").join("").trim();
   if (!content) throw new Error("Gemini não retornou material.");
-  if (content.replace(/\s+/g, " ").trim().length < 3_000) throw new Error("Gemini retornou um material curto demais para a sessão planejada.");
-  return content;
+  if (content.replace(/\s+/g, " ").trim().length < 5_000) throw new Error("Gemini retornou um material curto demais para a sessão planejada.");
+  return normalizeMaterialMarkdown(content);
 }
 
 export async function generateActivities(subject: string, questions: RagQuestion[], syllabus = "") {
