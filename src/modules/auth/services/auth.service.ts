@@ -142,20 +142,27 @@ export class AuthService {
 
     const tokenResponse = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(credential)}`);
     if (!tokenResponse.ok) throw new AuthError(401, "Não foi possível validar sua conta Google.");
-    const profile = await tokenResponse.json() as { aud?: string; email?: string; email_verified?: boolean | string; name?: string };
+    const profile = await tokenResponse.json() as { aud?: string; email?: string; email_verified?: boolean | string; name?: string; sub?: string };
     if (profile.aud !== env.GOOGLE_CLIENT_ID) throw new AuthError(401, "Não foi possível validar sua conta Google.");
-    if (!profile.email || ![true, "true"].includes(profile.email_verified ?? false)) {
+    if (!profile.email || !profile.sub || ![true, "true"].includes(profile.email_verified ?? false)) {
       throw new AuthError(401, "Não foi possível validar sua conta Google.");
     }
 
     const email = profile.email.toLowerCase();
-    const [user] = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1);
-    if (user) throw new AuthError(409, "Este e-mail já está cadastrado. Entre com e-mail e senha.");
+    const [user] = await db.select({ id: users.id, password: users.password, googleSubject: users.googleSubject }).from(users).where(eq(users.email, email)).limit(1);
+    if (user) {
+      if (user.googleSubject === profile.sub || (!user.password && !user.googleSubject)) {
+        await db.update(users).set({ googleSubject: profile.sub }).where(eq(users.id, user.id));
+        return this.issueTokens(user.id, signAccessToken);
+      }
+      throw new AuthError(409, "Este e-mail já está cadastrado. Entre com e-mail e senha.");
+    }
 
     const [created] = await db.insert(users).values({
       id: ulid(),
       name: profile.name?.trim() || email.split("@")[0],
       email,
+      googleSubject: profile.sub,
       firstLoginAt: new Date(),
     }).onConflictDoNothing({ target: users.email }).returning({ id: users.id });
 

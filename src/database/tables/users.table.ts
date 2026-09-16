@@ -1,9 +1,10 @@
-import { boolean, jsonb, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, jsonb, pgTable, timestamp, unique, varchar } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: varchar("id", { length: 26 }).primaryKey(),
   name: varchar("name", { length: 120 }).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
+  googleSubject: varchar("google_subject", { length: 255 }),
   socialName: varchar("social_name", { length: 120 }),
   onboardingPreferences: jsonb("onboarding_preferences"),
   onboardingCompletedAt: timestamp("onboarding_completed_at", { withTimezone: true }),
@@ -16,4 +17,4 @@ export const users = pgTable("users", {
     .$onUpdate(() => new Date())
     .notNull(),
   phone: varchar("phone", { length: 20 }),
-});
+}, (table) => ({ googleSubjectUnique: unique("users_google_subject_unique").on(table.googleSubject) }));
